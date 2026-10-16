@@ -3,7 +3,7 @@ project:
 
 website:
   # ↓ lo único que hay que cambiar al duplicar este repo
-  title: "Sitio web"
+  title: "Este es mi sitio web"
   navbar:
     left:
       - text: "Inicio"
