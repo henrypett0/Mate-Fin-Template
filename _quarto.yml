@@ -8,13 +8,35 @@ website:
     left:
       - text: "Inicio"
         href: index.qmd
-      - text: "Lecciones"
-        href: lecciones.qmd
+      - text: "Unidad 1"
+        href: unidad-1/index.qmd
+      - text: "Unidad 2"
+        href: unidad-2/index.qmd
+      - text: "Unidad 3"
+        href: unidad-3/index.qmd
+
+  bread-crumbs: true
   sidebar:
-    style: floating
-    contents:
-      - section: "Índice del curso"
-        contents: lecciones/*.qmd
+    - id: inicio
+      title: " "
+      style: docked
+      contents: []
+    - id: u1
+      style: docked
+      contents:
+        - section: "Unidad 1 · Fundamentos"
+          contents: unidad-1/*.qmd
+    - id: u2
+      style: docked
+      contents:
+        - section: "Unidad 2 · Interés y descuento"
+          contents: unidad-2/*.qmd
+    - id: u3
+      style: docked
+      contents:
+        - section: "Unidad 3 · Anualidades"
+          contents: unidad-3/*.qmd
+
 
 format:
   html:
@@ -72,4 +94,9 @@ format:
           main.content {
             background: #ffffff; border: 1px solid var(--borde);
             border-radius: 12px; padding: 2rem 2.25rem; margin-top: 1.5rem; }
+          .tarjeta-unidad {
+            background: #ffffff; border: 1px solid var(--borde); border-radius: 12px;
+            padding: 1.25rem 1.4rem; height: 100%; }
+          .tarjeta-unidad h3 { margin-top: 0; font-size: 1.15rem; }
+          .tarjeta-unidad p { color: var(--gris); margin-bottom: 0; }
         </style>

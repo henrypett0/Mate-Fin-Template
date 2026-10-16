@@ -1,5 +1,42 @@
 ---
-title: "Bienvenido al sitio web"
+title: "Este es mi sitio web"
+subtitle: "Matemáticas financieras con R, paso a paso"
+toc: false
 ---
 
-Este es el sitio web. Navega a **Lecciones** para ver todo el contenido disponible.
+<!-- ─────────── EDITA AQUÍ: la presentación del curso ─────────── -->
+
+Un curso para aprender matemáticas financieras **haciendo**, no solo leyendo.
+Cada lección explica una idea y la acompaña del código de R que la calcula,
+para que puedas cambiar los números y ver qué pasa.
+
+No necesitas experiencia previa en programación. Empieza por la Unidad 1.
+
+<!-- ──────────────────────── hasta aquí ──────────────────────── -->
+
+## Las unidades
+
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-4}
+::: {.tarjeta-unidad}
+### [Unidad 1 · Fundamentos](unidad-1/index.qmd)
+Qué es R, cómo se usa como calculadora financiera y los objetos con los que trabajarás.
+:::
+:::
+
+::: {.g-col-12 .g-col-md-4}
+::: {.tarjeta-unidad}
+### [Unidad 2 · Interés y descuento](unidad-2/index.qmd)
+El valor del dinero en el tiempo: interés simple y compuesto, valor presente y futuro.
+:::
+:::
+
+::: {.g-col-12 .g-col-md-4}
+::: {.tarjeta-unidad}
+### [Unidad 3 · Anualidades](unidad-3/index.qmd)
+Pagos periódicos, rentas y tablas de amortización.
+:::
+:::
+
+:::

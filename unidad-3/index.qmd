@@ -1,0 +1,16 @@
+---
+title: "Unidad 3 · Anualidades"
+subtitle: "Pagos periódicos y tablas de amortización"
+listing:
+  contents: "*.qmd"
+  sort: "filename asc"
+  type: table
+  fields: [title, description]
+  field-display-names:
+    title: "Lección"
+    description: "Descripción"
+---
+
+<!-- EDITA AQUÍ: de qué trata esta unidad -->
+
+Todavía por escribir. Borra este texto y empieza.

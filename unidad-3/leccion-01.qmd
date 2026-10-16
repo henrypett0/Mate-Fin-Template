@@ -1,0 +1,10 @@
+---
+title: "Lección 1: Por escribir"
+description: "Copia _plantilla.qmd y empieza aquí"
+date: "2026-05-01"
+---
+
+## Esta lección está vacía
+
+Borra todo esto y escribe. El índice de la izquierda y la tabla de la unidad
+se actualizan solos en cuanto guardes.

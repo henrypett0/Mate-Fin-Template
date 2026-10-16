@@ -1,0 +1,16 @@
+---
+title: "Unidad 1 · Fundamentos"
+subtitle: "Qué es R y cómo se usa como calculadora financiera"
+listing:
+  contents: "*.qmd"
+  sort: "filename asc"
+  type: table
+  fields: [title, description]
+  field-display-names:
+    title: "Lección"
+    description: "Descripción"
+---
+
+<!-- EDITA AQUÍ: de qué trata esta unidad -->
+
+En esta unidad das los primeros pasos: el entorno, los objetos y las operaciones básicas.

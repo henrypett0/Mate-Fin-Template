@@ -1,0 +1,16 @@
+---
+title: "Unidad 2 · Interés y descuento"
+subtitle: "Valor del dinero en el tiempo"
+listing:
+  contents: "*.qmd"
+  sort: "filename asc"
+  type: table
+  fields: [title, description]
+  field-display-names:
+    title: "Lección"
+    description: "Descripción"
+---
+
+<!-- EDITA AQUÍ: de qué trata esta unidad -->
+
+Aquí entras en materia: interés simple y compuesto, valor presente y valor futuro.
