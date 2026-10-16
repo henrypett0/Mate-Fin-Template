@@ -1,0 +1,94 @@
+---
+title: "Lección 1: R Como una gran calculadora"
+description: "R Como una gran calculadora"
+date: "2026-01-01"
+---
+
+```{r}
+library(dplyr)
+```
+
+
+## R... ¿Qué es R?
+
+R es un lenguaje de programación y un entorno diseñado para análisis estadístico y visualización de datos.
+Creado en 1939 por Ross Ihaka y Robert Gentleman, R fue evolucionando hasta convertirse en una herramienta poderosa para investigadores de múltiples disciplinas.
+En el mundo financiero R nos es útil por su capacidad para realiar cálculo cimplejos que tomarian tal vez el doble de hacerse en una calculadora financiera, R nos permite hacer des cálculos básicos de interés simple, hasta modelaciones y predicciones avanzadas.
+Este trabajo explora como R puede ser utilizado como una calculadora financiera, simplificando cálculos habituales y catalizando el aprendizaje de matemáticas financieras.
+
+## Rstudio\|Posit
+
+Rstudio ahora llamado Posit , es un entorno de desarrollo integrado IDE, diseñado para trabajar cómodamente con R, podemos ver esto como si Posit fuera una caja de arena y R la arena.
+Posit nos ofrece la interfaz que nos permite escribir código , ejecutar comandaos y ver los resultados de una forma organizada.
+Posit tiene una versión en la nube, **Posit Cloud** nos permite programar en R desde cualquier navegador sin la necesidad de instalar algún programa en la computadora, ni tampoco depender del procesamiento de nuestra computadora personal.
+
+## ¿Objetos en R?
+
+R es un lenguaje que combina características de lenguajes funcionales y lenguajes orientados a objetos.
+Podemos decir que R no es un lenguaje puramente orientado a objetos como Java o Python, pero una de sus bondades es que nos permite trabajar con objetos y aplicar alguno principios de la programación orientada a objetos.
+
+### Tipos de Objetos en R
+
+# 1. Vectores
+
+```        
+Conjunto de elementos del mismo tipo ('numéricos','strings', 'lógicos', etc.)
+```
+
+¿Cómo se crean?
+
+Usamos la función `c ('a','b,'c')`
+
+```{r}
+numeros =c(1,2,3,4)
+nombres =c('Carlos','Pedro','Erick','Jaime')
+print(nombres)
+```
+
+# 2. Matrices:
+
+Una **matriz** en R es una estructura de datos bidimensional que almacena elementos del mismo tipo (numéricos, caracteres, lógicos, etc.) organizados en filas y columnas.
+¿Cómo se crean?
+Usamos la función `matrix()` especificando el número de filas (`nrow`) y/o columnas (`ncol`).
+
+```{r}
+# Crear una matriz de 3 filas y 2 columnas con números del 1 al 6
+mi_matriz = matrix(1:6, nrow = 3, ncol = 2)
+
+# Imprimir la matriz
+print(mi_matriz)
+```
+
+Acceder a elementos de una matriz:
+
+```{r}
+# Acceder al elemento en la fila 2, columna 1
+mi_matriz[2, 1]
+
+# Acceder a la fila 3 completa
+mi_matriz[3, ]
+
+# Acceder a la columna 2 completa
+mi_matriz[, 2]
+```
+
+Operaciones con Matrices:
+
+```{r}
+# Crear otra matriz
+otra_matriz = matrix(7:12, nrow = 3, ncol = 2)
+
+# Sumar dos matrices
+suma_matrices = mi_matriz + otra_matriz
+
+# Multiplicación de matrices
+producto_matrices = mi_matriz %*% t(otra_matriz)
+
+# Transponer una matriz
+transpuesta = t(mi_matriz)
+
+# Imprimir resultados
+print(suma_matrices)
+print(producto_matrices)
+print(transpuesta)
+```

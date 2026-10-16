@@ -1,0 +1,9 @@
+---
+title: "Lecciones"
+listing:
+  contents: lecciones/*.qmd
+  sort: "filename asc"
+  type: default
+  fields: [date, title, description]
+  date-format: "D MMMM YYYY"
+---
