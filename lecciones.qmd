@@ -3,7 +3,11 @@ title: "Lecciones"
 listing:
   contents: lecciones/*.qmd
   sort: "filename asc"
-  type: default
+  type: table
   fields: [date, title, description]
-  date-format: "D MMMM YYYY"
+  field-display-names:
+    date: "Fecha"
+    title: "Lección"
+    description: "Descripción"
+  date-format: "DD/MM/YYYY"
 ---
