@@ -20,6 +20,11 @@ website:
       - section: "Índice del curso"
         contents: lecciones/*.qmd
 
+# Oculta en el sitio los mensajes y advertencias de R (por ejemplo, al cargar paquetes)
+execute:
+  message: false
+  warning: false
+
 format:
   html:
     # Estilo inspirado en devitoproject.org: el tema por defecto de Quarto
