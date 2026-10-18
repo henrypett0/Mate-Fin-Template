@@ -1,5 +1,9 @@
 # Instrucciones
 
+> **Esta es una plantilla.** Está pensada para que cualquier persona pueda
+> copiarla, poner su propio contenido y tener su sitio funcionando, sin
+> instalar nada y sin saber programar. Solo necesitas una cuenta de GitHub.
+
 ## Despliegue por primera vez
 
 Ir al botón de "Use this template" -> "Create a new repository"
