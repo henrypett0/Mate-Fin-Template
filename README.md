@@ -29,12 +29,12 @@ OPCIONAL: En el archivo "_quarto.yml" encontrarás una parte que se ve así
 ```
 format:
   html:
-    theme: minty
+    theme: default
     toc: true
     lang: es
 ```
 
-Pues cambiar el `theme`. Ahora está en minty. Puedes seleccionar de entre las opciones
+Puedes cambiar el `theme`. Ahora está en `default`, el tema estándar de Quarto (el mismo estilo de https://www.devitoproject.org/). Puedes seleccionar de entre las opciones
 
 https://quarto.org/docs/output-formats/html-themes.html
 

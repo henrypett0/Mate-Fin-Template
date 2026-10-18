@@ -1,5 +1,39 @@
 ---
-title: "Bienvenido al sitio web"
+title: "Matemáticas financieras"
 ---
 
-Este es el sitio web. Navega a **Lecciones** para ver todo el contenido disponible.
+Las **matemáticas financieras** estudian cómo cambia el valor del dinero a lo
+largo del tiempo. Un peso hoy no vale lo mismo que un peso dentro de un año:
+puede invertirse, generar intereses o perder poder de compra por la inflación.
+Esta disciplina nos da las herramientas para medir esos cambios y comparar
+cantidades que ocurren en momentos distintos.
+
+## ¿Qué estudian?
+
+- **Interés simple y compuesto:** cómo crece un capital cuando genera intereses.
+- **Valor presente y valor futuro:** cuánto vale hoy un pago que recibiremos
+  mañana, y viceversa.
+- **Tasas de interés:** nominales, efectivas y equivalentes, y cómo convertir
+  entre ellas.
+- **Anualidades:** series de pagos periódicos, como rentas, ahorros o
+  mensualidades.
+- **Amortización:** cómo se paga una deuda a lo largo del tiempo.
+
+## ¿Por qué son importantes?
+
+Las decisiones con dinero están en todas partes, y casi siempre involucran el
+tiempo:
+
+- **En la vida diaria:** elegir entre pagar de contado o a meses, comparar
+  créditos o tarjetas, o planear un ahorro para el retiro.
+- **En las empresas:** evaluar si un proyecto conviene, decidir cómo
+  financiarlo y calcular el costo real de una deuda.
+- **En los mercados:** valuar bonos, acciones y otros instrumentos financieros.
+
+Entender estos conceptos permite tomar mejores decisiones, detectar costos
+ocultos y no depender únicamente de lo que dice el banco o el vendedor.
+
+## Sobre este sitio
+
+Aquí encontrarás lecciones que combinan la teoría con ejemplos prácticos en R.
+Ve a **Lecciones** en la barra superior para ver todo el contenido disponible.
