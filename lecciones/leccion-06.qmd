@@ -1,0 +1,174 @@
+---
+title: "Lección 6: Perpetuidades"
+description: "Perpetuidades niveladas, aritméticas y geométricas: fórmulas, aplicaciones y cálculo con FinancialMath."
+date: "2026-10-20"
+---
+
+Una **perpetuidad** es una anualidad cuyos pagos continúan indefinidamente.
+Aunque ningún pago dura literalmente para siempre, el concepto es muy útil
+para valuar flujos de muy largo plazo: el rendimiento de un fondo de becas,
+las rentas de un inmueble o los dividendos de una acción. Sorprendentemente,
+aunque la suma de pagos es infinita, su valor presente es finito, porque los
+pagos lejanos valen hoy casi nada.
+
+```{r}
+library(FinancialMath)
+options(scipen = 999)
+```
+
+## Perpetuidad nivelada
+
+Si una perpetuidad paga $R$ al final de cada periodo, con una tasa $i$ por
+periodo, su valor presente es:
+
+$$
+VP = \frac{R}{i}
+$$
+
+La idea es intuitiva: si depositamos $R/i$ pesos a una tasa $i$, los intereses
+de cada periodo son exactamente $R$, y el capital nunca se agota. Si los pagos
+son anticipados, el primero se recibe de inmediato y el valor presente aumenta
+en $R$:
+
+$$
+VP_{\text{anticipada}} = R + \frac{R}{i} = \frac{R\,(1 + i)}{i}
+$$
+
+### La función `perpetuity.level()`
+
+Las funciones de perpetuidades usan los mismos argumentos que las de
+anualidades, excepto `n` y `fv`, que no tienen sentido cuando los pagos no
+terminan:
+
+| Argumento | Descripción |
+|-----------|-------------|
+| `pv`      | Valor presente de la perpetuidad. |
+| `pmt`     | Monto de cada pago. |
+| `i`       | Tasa de interés nominal anual, capitalizable `ic` veces al año. |
+| `ic`      | Frecuencia de capitalización de la tasa por año. |
+| `pf`      | Frecuencia de los pagos por año. |
+| `imm`     | `TRUE` para pagos vencidos; `FALSE` para anticipados. |
+
+Como antes, dejamos como `NA` (u omitimos) el dato que queremos calcular.
+
+### Ejemplo 1: valor presente
+
+> Calcular el valor presente de una perpetuidad de pagos mensuales de 200
+> pesos, con una tasa del 12 % nominal semestral, si los pagos son vencidos y
+> si son anticipados.
+
+```{r}
+vencida <- perpetuity.level(pmt = 200, i = 0.12, ic = 2, pf = 12, imm = TRUE)
+vencida
+```
+
+```{r}
+anticipada <- perpetuity.level(pmt = 200, i = 0.12, ic = 2, pf = 12, imm = FALSE)
+anticipada["PV", 1]
+```
+
+La perpetuidad vale `r formatC(vencida["PV", 1], format = "f", digits = 2, big.mark = ",")`
+pesos si es vencida y `r formatC(anticipada["PV", 1], format = "f", digits = 2, big.mark = ",")`
+si es anticipada. La diferencia es exactamente un pago de 200 pesos, el que se
+recibe de inmediato.
+
+El resultado también muestra la tasa efectiva anual (`Eff Rate`), la tasa
+nominal dada (`i^(2)`) y su equivalente capitalizable con la frecuencia de los
+pagos (`i^(12)`).
+
+### Ejemplo 2: fondo de becas
+
+> Una fundación quiere otorgar cada año, de forma permanente, una beca. Si
+> dispone de 50 000 pesos invertidos al 8 % efectivo anual, ¿de cuánto puede
+> ser la beca?
+
+Ahora el dato desconocido es el pago:
+
+```{r}
+beca <- perpetuity.level(pv = 50000, pmt = NA, i = 0.08, ic = 1, pf = 1,
+                         imm = TRUE)
+beca["PMT", 1]
+```
+
+**Conclusión.** La fundación puede otorgar una beca anual de
+`r formatC(beca["PMT", 1], format = "f", digits = 2, big.mark = ",")` pesos, que corresponde
+exactamente a los intereses del fondo; así, el capital se conserva intacto.
+
+## Perpetuidad aritmética
+
+En una perpetuidad **aritmética**, los pagos aumentan una cantidad fija $Q$ en
+cada periodo, a partir de un primer pago $P$. Para pagos vencidos, su valor
+presente es:
+
+$$
+VP = \frac{P}{i} + \frac{Q}{i^2}
+$$
+
+La función `perpetuity.arith()` recibe `p`, el primer pago, y `q`, el
+incremento por periodo.
+
+### Ejemplo
+
+> Una perpetuidad anticipada tiene pagos mensuales que comienzan en 10 pesos y
+> aumentan 3 pesos cada mes. Si su valor presente es de 36 000 pesos, ¿qué
+> tasa de interés efectiva anual paga?
+
+```{r}
+perp_arit <- perpetuity.arith(pv = 36000, p = 10, q = 3, i = NA, ic = 1,
+                              pf = 12, imm = FALSE)
+perp_arit
+```
+
+**Conclusión.** La perpetuidad paga una tasa efectiva anual del
+`r round(perp_arit["Eff Rate", 1] * 100, 2)` %, equivalente a una tasa
+nominal mensual del `r round(perp_arit["i^(12)", 1] * 100, 2)` %.
+
+## Perpetuidad geométrica
+
+En una perpetuidad **geométrica**, los pagos crecen un porcentaje fijo $k$ en
+cada periodo. Para pagos vencidos, su valor presente es:
+
+$$
+VP = \frac{P}{i - k}
+$$
+
+Esta fórmula solo tiene sentido si $k < i$: si los pagos crecieran más rápido
+que la tasa de interés, su valor presente sería infinito.
+
+En finanzas, esta fórmula se conoce como el **modelo de Gordon**, y se usa
+para estimar el valor de una acción cuyos dividendos crecen a un ritmo
+constante.
+
+### Ejemplo
+
+> Una empresa pagará un dividendo de 1 000 pesos al final de este año, y se
+> espera que sus dividendos crezcan un 3 % anual de forma indefinida. Si los
+> inversionistas exigen un rendimiento del 10 % anual, ¿cuánto vale la acción
+> hoy?
+
+```{r}
+accion <- perpetuity.geo(p = 1000, k = 0.03, i = 0.10, ic = 1, pf = 1,
+                         imm = TRUE)
+accion
+```
+
+Comprobamos el resultado con la fórmula:
+
+```{r}
+1000 / (0.10 - 0.03)
+```
+
+**Conclusión.** De acuerdo con el modelo, la acción vale
+`r formatC(accion["PV", 1], format = "f", digits = 2, big.mark = ",")` pesos hoy.
+
+## Resumen
+
+- Una perpetuidad es una serie de pagos que no termina; aun así, su valor
+  presente es finito.
+- **Nivelada:** $VP = R / i$. Es el capital cuyos intereses cubren
+  exactamente cada pago.
+- **Aritmética:** $VP = P / i + Q / i^2$.
+- **Geométrica:** $VP = P / (i - k)$, válida solo si $k < i$; es la base del
+  modelo de Gordon para valuar acciones.
+- Las funciones `perpetuity.level()`, `perpetuity.arith()` y `perpetuity.geo()`
+  calculan el dato que falte, igual que las funciones de anualidades.

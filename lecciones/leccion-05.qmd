@@ -1,0 +1,217 @@
+---
+title: "Lección 5: Anualidades"
+description: "Anualidades niveladas, aritméticas y geométricas con FinancialMath, y ejercicios resueltos."
+date: "2026-10-20"
+---
+
+Una **anualidad** es una serie de pagos que se realizan a intervalos
+regulares durante un plazo determinado: las mensualidades de un crédito, los
+depósitos a un ahorro o la renta de un local. A pesar de su nombre, los pagos
+no tienen que ser anuales; pueden ser mensuales, bimestrales o de cualquier
+otra frecuencia. En esta lección veremos los tres tipos principales de
+anualidades y cómo resolverlas con FinancialMath.
+
+```{r}
+library(FinancialMath)
+options(scipen = 999)  # Muestra los números sin notación científica
+```
+
+## Conceptos básicos
+
+### Anualidad vencida y anticipada
+
+- En una **anualidad vencida**, cada pago se realiza al **final** del periodo.
+  Es el caso más común, como las mensualidades de un préstamo.
+- En una **anualidad anticipada**, cada pago se realiza al **inicio** del
+  periodo, como el pago de una renta.
+
+En FinancialMath, esta distinción se indica con el argumento `imm`:
+`imm = TRUE` para una anualidad **vencida** e `imm = FALSE` para una
+**anticipada**.
+
+### Fórmulas de la anualidad nivelada
+
+Si una anualidad vencida tiene $n$ pagos iguales de monto $R$ y una tasa $i$
+por periodo, su valor presente y su valor futuro son:
+
+$$
+VP = R \cdot \frac{1 - (1 + i)^{-n}}{i}
+\qquad\qquad
+VF = R \cdot \frac{(1 + i)^{n} - 1}{i}
+$$
+
+En una anualidad anticipada, cada pago ocurre un periodo antes, por lo que
+ambos valores se multiplican por $(1 + i)$.
+
+### Cómo se usan las funciones de anualidades
+
+Las tres funciones de esta lección comparten la misma lógica: les damos los
+datos que conocemos y dejamos como `NA` (o simplemente omitimos) el dato que
+queremos calcular. Sus argumentos comunes son:
+
+| Argumento | Descripción |
+|-----------|-------------|
+| `pv`, `fv` | Valor presente y valor futuro de la anualidad. |
+| `n`        | Número de pagos. |
+| `i`        | Tasa de interés nominal anual, capitalizable `ic` veces al año. |
+| `ic`       | Frecuencia de capitalización de la tasa por año. |
+| `pf`       | Frecuencia de los pagos por año (12 para pagos mensuales). |
+| `imm`      | `TRUE` para anualidad vencida; `FALSE` para anticipada. |
+| `plot`     | `TRUE` para dibujar el diagrama de pagos. |
+
+La función se encarga de convertir la tasa a la frecuencia de los pagos, por
+lo que no es necesario hacerlo a mano.
+
+## Anualidad nivelada: `annuity.level()`
+
+En una anualidad **nivelada** todos los pagos son iguales. Además de los
+argumentos comunes, la función recibe `pmt`, el monto de cada pago.
+
+### Ejemplo
+
+> Calcular el valor presente y el valor futuro de una anualidad vencida de 10
+> pagos mensuales de 200 pesos, con una tasa del 5 % efectivo anual.
+
+La tasa es efectiva anual, por lo que `ic = 1`; los pagos son mensuales, por lo
+que `pf = 12`.
+
+```{r}
+anualidad <- annuity.level(n = 10, pmt = 200, i = 0.05, ic = 1, pf = 12,
+                           imm = TRUE, plot = TRUE)
+anualidad
+```
+
+### Cómo leer el resultado
+
+| Fila       | Contenido |
+|------------|-----------|
+| `PV`, `FV` | Valor presente y valor futuro. |
+| `PMT`      | Monto de cada pago. |
+| `Eff Rate` | Tasa efectiva anual. |
+| `i^(12)`   | Tasa nominal anual capitalizable con la frecuencia de los pagos. |
+| `Periods`  | Número de pagos. |
+| `Years`    | Duración en años. |
+
+```{r}
+anualidad["PV", 1]
+anualidad["FV", 1]
+```
+
+La anualidad tiene un valor presente de
+`r formatC(anualidad["PV", 1], format = "f", digits = 2, big.mark = ",")` pesos y un valor
+futuro de `r formatC(anualidad["FV", 1], format = "f", digits = 2, big.mark = ",")` pesos.
+
+## Anualidad aritmética: `annuity.arith()`
+
+En una anualidad **aritmética**, cada pago aumenta en una cantidad fija
+respecto al anterior: $P,\; P + Q,\; P + 2Q,\; \dots$ Además de los argumentos
+comunes, la función recibe `p`, el primer pago, y `q`, el incremento por
+periodo.
+
+### Ejemplo
+
+> Una anualidad anticipada tiene pagos mensuales que comienzan en 100 pesos y
+> aumentan 20 pesos cada mes. Con una tasa del 5 % efectivo anual, ¿cuántos
+> pagos se necesitan para acumular 7 073.37 pesos?
+
+En este caso, el dato desconocido es `n`:
+
+```{r}
+anualidad_arit <- annuity.arith(fv = 7073.37, n = NA, p = 100, q = 20,
+                                i = 0.05, ic = 1, pf = 12, imm = FALSE)
+anualidad_arit
+```
+
+```{r}
+anualidad_arit["Periods", 1]
+```
+
+**Conclusión.** Se necesitan `r round(anualidad_arit["Periods", 1])` pagos
+mensuales, es decir, un año y diez meses.
+
+## Anualidad geométrica: `annuity.geo()`
+
+En una anualidad **geométrica**, cada pago crece en un porcentaje fijo
+respecto al anterior: $P,\; P(1 + k),\; P(1 + k)^2,\; \dots$ Es útil para
+modelar pagos que se ajustan con la inflación, como una renta o un salario. La
+función recibe `p`, el primer pago, y `k`, la tasa de crecimiento por periodo.
+
+### Ejemplo
+
+> Un local se renta por 12 años. La renta del primer año es de 5 000 pesos,
+> pagaderos al final del año, y aumenta un 4 % cada año. Con una tasa del 10 %
+> efectivo anual, ¿cuál es el valor presente de todas las rentas?
+
+```{r}
+renta <- annuity.geo(n = 12, p = 5000, k = 0.04, i = 0.10, ic = 1, pf = 1,
+                     imm = TRUE)
+renta
+```
+
+**Conclusión.** El valor presente de las rentas es de
+`r formatC(renta["PV", 1], format = "f", digits = 2, big.mark = ",")` pesos. Es el precio
+máximo que un inversionista debería pagar hoy por el derecho a cobrarlas, si
+exige un rendimiento del 10 %.
+
+## Ejercicios resueltos
+
+### Ejercicio 1: monto de la renta
+
+> ¿De cuánto debe ser cada una de 15 rentas mensuales vencidas para acumular
+> 48 501.68 pesos, si los intereses son del 6.3 % nominal mensual?
+
+**Planteamiento.** Conocemos el valor futuro, el número de pagos y la tasa;
+buscamos el monto de cada pago. La tasa es nominal mensual, así que `ic = 12`,
+y los pagos son mensuales, así que `pf = 12`.
+
+```{r}
+ejercicio_1 <- annuity.level(fv = 48501.68, n = 15, i = 0.063, ic = 12,
+                             pf = 12, imm = TRUE)
+ejercicio_1["PMT", 1]
+```
+
+**Conclusión.** Cada renta debe ser de
+`r formatC(ejercicio_1["PMT", 1], format = "f", digits = 2, big.mark = ",")` pesos.
+
+### Ejercicio 2: precio de contado
+
+> La empresa Diseño e Impresión Virtual compra una máquina con un anticipo del
+> 15 % y 10 pagos mensuales vencidos de 95 000 pesos, con intereses del
+> 12.36 % nominal mensual. ¿Cuál es el precio de contado de la máquina?
+
+**Planteamiento.** El valor presente de los 10 pagos equivale a la parte del
+precio que se financió. Como el anticipo cubre el 15 %, los pagos cubren el
+85 % restante:
+
+$$
+\text{Precio} = \frac{VP_{\text{pagos}}}{0.85}
+$$
+
+```{r}
+pagos <- annuity.level(pmt = 95000, n = 10, i = 0.1236, ic = 12, pf = 12,
+                       imm = TRUE)
+
+vp_pagos <- pagos["PV", 1]
+precio <- vp_pagos / 0.85
+
+vp_pagos
+precio
+```
+
+**Conclusión.** El precio de contado de la máquina es de
+`r formatC(precio, format = "f", digits = 2, big.mark = ",")` pesos: un anticipo de
+`r formatC(precio * 0.15, format = "f", digits = 2, big.mark = ",")` pesos más los pagos
+mensuales, cuyo valor presente es de
+`r formatC(vp_pagos, format = "f", digits = 2, big.mark = ",")` pesos.
+
+## Resumen
+
+- Una anualidad es una serie de pagos periódicos; puede ser **vencida** (pagos
+  al final de cada periodo) o **anticipada** (al inicio).
+- En una anualidad **nivelada** los pagos son iguales; en una **aritmética**
+  crecen una cantidad fija; en una **geométrica**, un porcentaje fijo.
+- Las funciones `annuity.level()`, `annuity.arith()` y `annuity.geo()` calculan
+  el dato que falte (valor presente, valor futuro, pago, número de pagos o
+  tasa) a partir de los demás.
+- El argumento `imm` distingue la anualidad vencida (`TRUE`) de la anticipada
+  (`FALSE`).

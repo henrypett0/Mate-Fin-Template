@@ -1,0 +1,186 @@
+---
+title: "Lección 4: Valor del dinero en el tiempo y flujos de efectivo"
+description: "Valor presente, valor futuro, valor presente neto y análisis de flujos de efectivo con cf.analysis."
+date: "2026-10-20"
+---
+
+Un peso disponible hoy vale más que un peso que recibiremos dentro de un año,
+porque el de hoy puede invertirse y generar intereses. Este principio, el
+**valor del dinero en el tiempo**, es la base de todas las matemáticas
+financieras. En esta lección aprenderemos a trasladar cantidades de dinero a
+lo largo del tiempo y a evaluar series de pagos con la función `cf.analysis()`
+del paquete FinancialMath.
+
+```{r}
+library(FinancialMath)
+```
+
+## Valor futuro y valor presente
+
+En la lección anterior vimos que un capital $C$ invertido a una tasa efectiva
+$i$ se convierte, después de $t$ periodos, en su **valor futuro**:
+
+$$
+VF = C\,(1 + i)^t
+$$
+
+El camino inverso responde a la pregunta: *¿cuánto vale hoy una cantidad que
+recibiremos en el futuro?* Ese valor es el **valor presente**, y se obtiene
+despejando la fórmula anterior:
+
+$$
+VP = \frac{VF}{(1 + i)^t} = VF \cdot v^t,
+\qquad \text{donde } v = \frac{1}{1 + i}
+$$
+
+Al factor $v$ se le llama **factor de descuento**: indica cuánto vale hoy un
+peso pagadero dentro de un periodo.
+
+### Ejemplo
+
+¿Cuánto debemos invertir hoy, al 10 % efectivo anual, para tener 50 000 pesos
+dentro de 3 años?
+
+```{r}
+vf <- 50000
+i <- 0.10
+t <- 3
+
+vp <- vf / (1 + i)^t
+vp
+```
+
+Debemos invertir `r formatC(vp, format = "f", digits = 2, big.mark = ",")` pesos. Podemos
+comprobarlo llevando esa cantidad al futuro:
+
+```{r}
+vp * (1 + i)^t
+```
+
+## Flujos de efectivo
+
+Un **flujo de efectivo** es una serie de pagos que ocurren en distintos
+momentos: los ingresos que genera un proyecto, las rentas de una propiedad o
+los cupones de un bono. Su valor presente es la suma de los valores presentes
+de cada pago:
+
+$$
+VP = \sum_{t} CF_t \cdot v^t
+$$
+
+donde $CF_t$ es el pago que ocurre en el tiempo $t$.
+
+### Valor presente neto
+
+Cuando un proyecto requiere una inversión inicial, comparamos esa inversión con
+el valor presente de los ingresos que producirá. La diferencia es el **valor
+presente neto** (VPN):
+
+$$
+VPN = -\,\text{Inversión inicial} + \sum_{t} CF_t \cdot v^t
+$$
+
+- Si $VPN > 0$, el proyecto genera más valor del que cuesta: conviene.
+- Si $VPN < 0$, el proyecto no recupera la inversión a la tasa exigida.
+
+## Análisis de flujos con `cf.analysis()`
+
+La función `cf.analysis()` calcula el valor presente de una serie de pagos,
+junto con su duración y su convexidad, dos medidas que explicaremos más
+adelante.
+
+| Argumento | Descripción |
+|-----------|-------------|
+| `cf`      | Vector con el monto de cada pago. |
+| `times`   | Vector con el momento en que ocurre cada pago (en periodos). |
+| `i`       | Tasa de interés efectiva por periodo. |
+| `time.d`  | `TRUE` para dibujar el diagrama de tiempo de los pagos. |
+| `plot`    | `TRUE` para dibujar la curva de convexidad (valor presente según la tasa). |
+
+Conviene activar solo una de las dos gráficas en cada llamada.
+
+### Ejemplo
+
+> Un proyecto requiere una inversión inicial de 600 pesos y generará ingresos
+> de 200, 300 y 400 pesos al final de los años 1, 2 y 3. Con una tasa del 10 %
+> efectivo anual, ¿conviene realizarlo?
+
+Primero analizamos los ingresos futuros:
+
+```{r}
+ingresos <- c(200, 300, 400)
+anios <- c(1, 2, 3)
+
+flujos <- cf.analysis(cf = ingresos, times = anios, i = 0.10, time.d = TRUE)
+flujos
+```
+
+El diagrama de tiempo muestra cada pago en el periodo en que ocurre y, a la
+izquierda en azul, su valor presente total. La función devuelve
+una matriz cuya fila `PV` contiene el valor presente de los ingresos. Con ella
+calculamos el valor presente neto:
+
+```{r}
+vp_ingresos <- flujos["PV", 1]
+vpn <- -600 + vp_ingresos
+vpn
+```
+
+**Conclusión.** El VPN es positivo (`r round(vpn, 2)` pesos): los ingresos del
+proyecto, traídos a valor presente, superan la inversión inicial, así que el
+proyecto conviene a una tasa del 10 %.
+
+Podemos verificar el valor presente sumando cada pago descontado:
+
+```{r}
+sum(ingresos / (1 + 0.10)^anios)
+```
+
+## Duración y convexidad
+
+Además del valor presente, `cf.analysis()` devuelve cuatro medidas que
+describen qué tan sensible es el valor de un flujo a cambios en la tasa de
+interés:
+
+| Fila    | Medida | Interpretación |
+|---------|--------|----------------|
+| `MAC D` | Duración de Macaulay | Tiempo promedio en que se reciben los pagos, ponderado por su valor presente. |
+| `MOD D` | Duración modificada | Porcentaje aproximado en que cambia el valor presente si la tasa sube un punto: $D_{mod} = D_{mac} / (1 + i)$. |
+| `MAC C` | Convexidad de Macaulay | Mide la curvatura de la relación entre valor presente y tasa. |
+| `MOD C` | Convexidad modificada | Corrige la aproximación de la duración cuando el cambio en la tasa es grande. |
+
+Para consultarlas usamos el nombre de cada fila:
+
+```{r}
+flujos["MAC D", 1]  # Duración de Macaulay
+flujos["MOD D", 1]  # Duración modificada
+```
+
+La curva de convexidad muestra cómo cambia el valor presente de los ingresos
+según la tasa de interés. La línea vertical marca la tasa del ejemplo y la
+horizontal, el valor presente correspondiente:
+
+```{r}
+#| results: hide
+cf.analysis(cf = ingresos, times = anios, i = 0.10, plot = TRUE)
+```
+
+A mayor tasa, menor valor presente, y la relación no es una línea recta sino
+una curva: eso es lo que mide la convexidad.
+
+En nuestro ejemplo, el dinero se recibe en promedio a los
+`r round(flujos["MAC D", 1], 2)` años, y si la tasa subiera un punto
+porcentual, el valor presente de los ingresos bajaría aproximadamente un
+`r round(flujos["MOD D", 1], 2)` %. Estas medidas son especialmente útiles
+para analizar bonos, como veremos en una lección posterior.
+
+## Resumen
+
+- El valor presente y el valor futuro permiten comparar cantidades que ocurren
+  en momentos distintos: $VF = VP\,(1 + i)^t$.
+- El valor presente de un flujo de efectivo es la suma de cada pago
+  multiplicado por su factor de descuento $v^t$.
+- El valor presente neto compara una inversión con el valor presente de sus
+  ingresos: un VPN positivo indica que el proyecto conviene.
+- `cf.analysis()` calcula el valor presente, la duración y la convexidad de una
+  serie de pagos.
