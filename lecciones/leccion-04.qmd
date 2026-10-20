@@ -86,8 +86,8 @@ $$
 ## Análisis de flujos con `cf.analysis()`
 
 La función `cf.analysis()` calcula el valor presente de una serie de pagos,
-junto con su duración y su convexidad, dos medidas que explicaremos más
-adelante.
+junto con su duración y su convexidad, dos medidas que explicaremos al final
+de la lección.
 
 | Argumento | Descripción |
 |-----------|-------------|
@@ -112,16 +112,17 @@ ingresos <- c(200, 300, 400)
 anios <- c(1, 2, 3)
 
 flujos <- cf.analysis(cf = ingresos, times = anios, i = 0.10, time.d = TRUE)
-flujos
 ```
 
 El diagrama de tiempo muestra cada pago en el periodo en que ocurre y, a la
-izquierda en azul, su valor presente total. La función devuelve
-una matriz cuya fila `PV` contiene el valor presente de los ingresos. Con ella
-calculamos el valor presente neto:
+izquierda en azul, su valor presente total. La función guarda sus resultados
+en una matriz; por ahora solo nos interesa la fila `PV` (*present value*), que
+contiene el valor presente de los ingresos. Con ella calculamos el valor
+presente neto:
 
 ```{r}
 vp_ingresos <- flujos["PV", 1]
+vp_ingresos
 vpn <- -600 + vp_ingresos
 vpn
 ```
@@ -138,41 +139,103 @@ sum(ingresos / (1 + 0.10)^anios)
 
 ## Duración y convexidad
 
-Además del valor presente, `cf.analysis()` devuelve cuatro medidas que
-describen qué tan sensible es el valor de un flujo a cambios en la tasa de
-interés:
-
-| Fila    | Medida | Interpretación |
-|---------|--------|----------------|
-| `MAC D` | Duración de Macaulay | Tiempo promedio en que se reciben los pagos, ponderado por su valor presente. |
-| `MOD D` | Duración modificada | Porcentaje aproximado en que cambia el valor presente si la tasa sube un punto: $D_{mod} = D_{mac} / (1 + i)$. |
-| `MAC C` | Convexidad de Macaulay | Mide la curvatura de la relación entre valor presente y tasa. |
-| `MOD C` | Convexidad modificada | Corrige la aproximación de la duración cuando el cambio en la tasa es grande. |
-
-Para consultarlas usamos el nombre de cada fila:
+Veamos ahora la matriz completa que devolvió `cf.analysis()`:
 
 ```{r}
-flujos["MAC D", 1]  # Duración de Macaulay
-flujos["MOD D", 1]  # Duración modificada
+flujos
 ```
 
-La curva de convexidad muestra cómo cambia el valor presente de los ingresos
-según la tasa de interés. La línea vertical marca la tasa del ejemplo y la
-horizontal, el valor presente correspondiente:
+Además del valor presente (`PV`), la función calcula cuatro medidas. Sus
+nombres son abreviaturas en inglés: `D` es la **duración** (*duration*), `C`
+es la **convexidad** (*convexity*), `MAC` se refiere a Frederick Macaulay, el
+economista que propuso la duración, y `MOD` significa **modificada**
+(*modified*). Las cuatro responden a una misma pregunta: *¿qué tan sensible es
+el valor presente de los pagos a un cambio en la tasa de interés?*
+
+### Duración de Macaulay (`MAC D`)
+
+Es el **tiempo promedio** en que se reciben los pagos, donde cada periodo $t$
+pesa según el valor presente del pago que ocurre en él:
+
+$$
+D_{mac} = \frac{\sum_t t \cdot CF_t \, v^t}{VP}
+$$
+
+Podemos calcularla nosotros mismos y comprobar que coincide con la función:
+
+```{r}
+sum(anios * ingresos / (1 + 0.10)^anios) / vp_ingresos
+```
+
+En el ejemplo, aunque el último pago llega en el año 3, en promedio el dinero
+se recibe a los `r round(flujos["MAC D", 1], 2)` años. Mientras más lejanos
+sean los pagos, mayor es la duración, y más se ve afectado su valor presente
+cuando cambia la tasa.
+
+### Duración modificada (`MOD D`)
+
+Traduce la duración de Macaulay a una medida directa de sensibilidad:
+
+$$
+D_{mod} = \frac{D_{mac}}{1 + i}
+$$
+
+Indica en qué **porcentaje aproximado** baja el valor presente si la tasa
+sube un punto porcentual. En el ejemplo, la duración modificada es
+`r round(flujos["MOD D", 1], 2)`: si la tasa pasara del 10 % al 11 %, el valor
+presente de los ingresos bajaría alrededor de un
+`r round(flujos["MOD D", 1], 2)` %.
+
+### Convexidad (`MAC C` y `MOD C`)
+
+La duración supone que el valor presente cambia en línea recta con la tasa,
+pero en realidad la relación es una **curva**. La siguiente gráfica, que
+`cf.analysis()` dibuja con `plot = TRUE`, lo muestra; las líneas punteadas
+marcan la tasa del ejemplo y su valor presente:
 
 ```{r}
 #| results: hide
 cf.analysis(cf = ingresos, times = anios, i = 0.10, plot = TRUE)
 ```
 
-A mayor tasa, menor valor presente, y la relación no es una línea recta sino
-una curva: eso es lo que mide la convexidad.
+La **convexidad** mide qué tan pronunciada es esa curva, y sirve para corregir
+la aproximación de la duración. La convexidad modificada (`MOD C`) es la que se
+usa en esta corrección:
 
-En nuestro ejemplo, el dinero se recibe en promedio a los
-`r round(flujos["MAC D", 1], 2)` años, y si la tasa subiera un punto
-porcentual, el valor presente de los ingresos bajaría aproximadamente un
-`r round(flujos["MOD D", 1], 2)` %. Estas medidas son especialmente útiles
-para analizar bonos, como veremos en una lección posterior.
+$$
+\frac{\Delta VP}{VP} \approx -D_{mod}\,\Delta i + \frac{1}{2}\,C_{mod}\,(\Delta i)^2
+$$
+
+donde $\Delta i$ es el cambio en la tasa. La convexidad de Macaulay (`MAC C`)
+es su equivalente en la escala de Macaulay, de la misma forma que `MAC D` lo es
+de `MOD D`.
+
+### Comprobación
+
+Comparemos las aproximaciones con el cambio real si la tasa sube del 10 % al
+11 %:
+
+```{r}
+delta_i <- 0.01
+d_mod <- flujos["MOD D", 1]
+c_mod <- flujos["MOD C", 1]
+
+# Cambio real en el valor presente
+vp_nuevo <- sum(ingresos / (1 + 0.11)^anios)
+cambio_real <- vp_nuevo / vp_ingresos - 1
+
+# Aproximaciones
+solo_duracion <- -d_mod * delta_i
+con_convexidad <- -d_mod * delta_i + 0.5 * c_mod * delta_i^2
+
+round(c(real = cambio_real,
+        solo_duracion = solo_duracion,
+        con_convexidad = con_convexidad) * 100, 4)
+```
+
+La duración por sí sola da una buena aproximación, y al agregar la convexidad
+el resultado se acerca todavía más al cambio real. Estas medidas son
+fundamentales para el análisis de bonos, que veremos en una lección posterior.
 
 ## Resumen
 
