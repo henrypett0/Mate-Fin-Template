@@ -118,6 +118,7 @@ jobs:
             any::knitr
             any::rmarkdown
             any::readr
+            any::FinancialMath
 
       - name: Renderizar sitio
         run: quarto render

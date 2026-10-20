@@ -1,52 +1,209 @@
 ---
-title: "Lección 3: Recordatorio de R"
-description: "Tercera lección del curso"
-date: "2026-04-01"
+title: "Lección 3: Tasas de interés y su conversión"
+description: "Tasas nominales, efectivas y de descuento, y su conversión con el paquete FinancialMath."
+date: "2026-10-19"
 ---
 
-Acá usamos nuestra sintaxis clásica de RMarkdown/Quarto
+Las tasas de interés se expresan de muchas formas: nominal mensual, nominal
+semestral, efectiva anual, de descuento… Dos tasas con números distintos
+pueden ser equivalentes, y dos tasas con el mismo número pueden no serlo. En
+esta lección veremos cómo se relacionan entre sí y cómo convertirlas con el
+paquete **FinancialMath**, para poder compararlas correctamente.
 
-## Un vistazo a los datos
+## Conceptos básicos
+
+### Tasa efectiva
+
+La **tasa efectiva anual** $i$ es el rendimiento real que produce un capital en
+un año. Si invertimos un capital $C$ a una tasa efectiva $i$, al cabo de $t$
+años tendremos:
+
+$$
+M = C\,(1 + i)^t
+$$
+
+Esta es la fórmula del **interés compuesto**: los intereses de cada periodo se
+suman al capital y generan, a su vez, nuevos intereses.
+
+### Tasa nominal
+
+Una **tasa nominal** $i^{(m)}$ es una tasa anual que se capitaliza $m$ veces al
+año. Por ejemplo, una tasa del 12 % nominal mensual ($m = 12$) significa que
+cada mes se paga un interés del $12\% / 12 = 1\%$ sobre el saldo acumulado.
+
+Como los intereses se capitalizan varias veces al año, la tasa efectiva
+equivalente es mayor que la nominal. La relación entre ambas es:
+
+$$
+1 + i = \left(1 + \frac{i^{(m)}}{m}\right)^m
+$$
+
+Para el ejemplo anterior, $i = (1 + 0.01)^{12} - 1 = 12.68\%$.
+
+### Tasa de descuento y fuerza de interés
+
+Además de la tasa de interés, existen otras dos formas equivalentes de
+expresar el costo del dinero:
+
+- La **tasa de descuento efectiva** $d$ mide el interés como proporción del
+  valor *final* y no del inicial: $d = \dfrac{i}{1 + i}$.
+- La **fuerza de interés** $\delta$ corresponde a una capitalización continua,
+  es decir, que ocurre en cada instante: $\delta = \ln(1 + i)$.
+
+Las tres medidas, $i$, $d$ y $\delta$, describen el mismo crecimiento del
+dinero y pueden convertirse entre sí.
+
+## El paquete FinancialMath
+
+**FinancialMath** reúne funciones para los cálculos financieros más comunes:
+conversión de tasas, flujos de efectivo, anualidades, perpetuidades, bonos y
+amortización. Lo usaremos a lo largo del curso.
+
+Como cualquier paquete, se instala una sola vez (el nombre va entre comillas):
 
 ```{r}
-#| echo: false
-#| message: false
-library(dplyr)
-library(ggplot2)
+#| eval: false
+install.packages("FinancialMath")
 ```
+
+y se carga al inicio de cada sesión:
 
 ```{r}
-head(mtcars)
+library(FinancialMath)
 ```
 
-## Un gráfico
+## Conversión de tasas con `rate.conv()`
+
+La función `rate.conv()` convierte una tasa a sus equivalentes efectivas y
+nominales. Sus argumentos son:
+
+| Argumento | Descripción |
+|-----------|-------------|
+| `rate`    | Tasa que se desea convertir, expresada en decimal (6 % = `0.06`). |
+| `conv`    | Número de veces al año que se capitaliza la tasa dada. Para una tasa efectiva anual, `conv = 1`; para una nominal semestral, `conv = 2`. |
+| `type`    | Tipo de tasa dada: `"interest"` (interés), `"discount"` (descuento) o `"force"` (fuerza de interés). |
+| `nom`     | Frecuencia de capitalización de la tasa nominal que queremos obtener. |
+
+### Ejemplo
+
+Convertir una tasa del 6 % nominal anual capitalizable semestralmente en su
+tasa efectiva anual y en su tasa nominal capitalizable mensualmente.
+
+La tasa dada es nominal semestral, por lo que `rate = 0.06` y `conv = 2`. Como
+queremos la equivalente nominal mensual, `nom = 12`.
 
 ```{r}
-#| echo: false
-#| warning: false
-ggplot(mtcars, aes(x = wt, y = mpg, color = as.factor(cyl))) +
-  geom_point(size = 3) +
-  labs(
-    title = "Peso del auto vs. rendimiento",
-    x = "Peso (miles de lb)",
-    y = "Millas por galón",
-    color = "Cilindros"
-  ) +
-  theme_minimal()
+tasas <- rate.conv(rate = 0.06, conv = 2, type = "interest", nom = 12)
+tasas
 ```
 
-## Una tabla resumen
+### Cómo leer el resultado
+
+La función devuelve una matriz con nombres en sus filas y columnas:
+
+- **Filas.** `eff` contiene las tasas efectivas anuales; `nom(2)` y `nom(12)`
+  contienen las tasas nominales capitalizables 2 y 12 veces al año.
+- **Columnas.** `i` corresponde a la tasa de interés, `d` a la tasa de
+  descuento y `delta` a la fuerza de interés.
+
+Así, una tasa del 6 % nominal semestral equivale a una tasa efectiva anual de
+`r round(tasas["eff", "i"] * 100, 4)` % y a una nominal mensual de
+`r round(tasas["nom(12)", "i"] * 100, 4)` %.
+
+Podemos comprobar el primer valor con la fórmula de equivalencia:
 
 ```{r}
-#| echo: false
-mtcars |>
-  group_by(cyl) |>
-  summarise(mpg_promedio = mean(mpg)) |>
-  knitr::kable()
+(1 + 0.06 / 2)^2 - 1
 ```
 
-Un resumen del famoso dataset "iris"
+Para extraer un valor de la matriz usamos los nombres de su fila y su columna,
+o bien sus posiciones:
 
 ```{r}
-summary(iris)
+tasas["eff", "i"]       # Tasa efectiva anual
+tasas["eff", "d"]       # Tasa de descuento efectiva
+tasas["eff", "delta"]   # Fuerza de interés
+tasas["nom(12)", "i"]   # Tasa nominal mensual
+tasas[1, 2]             # Fila 1, columna 2: tasa de descuento efectiva
 ```
+
+Usar los nombres hace el código más claro y evita errores si cambia el orden
+de las filas.
+
+## Ejercicios resueltos
+
+### Ejercicio 1: comparar tasas de distintas instituciones
+
+> Adriana busca un préstamo. Una institución le ofrece una tasa del 20.4 %
+> nominal mensual; otra, del 21.5 % nominal semestral; y su banco, del 22.3 %
+> efectivo anual. ¿Qué opción le conviene más?
+
+**Planteamiento.** Las tres tasas tienen distinta frecuencia de
+capitalización, así que no pueden compararse directamente. Las convertimos a
+tasas efectivas anuales y elegimos la menor, pues se trata de un préstamo.
+
+```{r}
+# Opción A: 20.4 % nominal mensual
+efectiva_A <- rate.conv(rate = 0.204, conv = 12)["eff", "i"]
+
+# Opción B: 21.5 % nominal semestral
+efectiva_B <- rate.conv(rate = 0.215, conv = 2)["eff", "i"]
+
+# Opción C: ya es una tasa efectiva anual
+efectiva_C <- 0.223
+
+opciones <- data.frame(
+  opcion = c("A: 20.4 % nominal mensual",
+             "B: 21.5 % nominal semestral",
+             "C: 22.3 % efectiva anual"),
+  tasa_efectiva = round(c(efectiva_A, efectiva_B, efectiva_C) * 100, 2)
+)
+
+opciones
+```
+
+**Conclusión.** La opción C tiene la menor tasa efectiva anual
+(`r round(efectiva_C * 100, 2)` %), por lo que es la más conveniente para
+Adriana, aunque su tasa anunciada parecía la más alta. La opción A, que
+aparentaba ser la más barata, tiene en realidad una tasa efectiva del
+`r round(efectiva_A * 100, 2)` %.
+
+### Ejercicio 2: tiempo para alcanzar un rendimiento
+
+> ¿En cuántos días un capital invertido al 15.9 % de interés efectivo anual
+> crece un 18 %?
+
+**Planteamiento.** Que el capital crezca un 18 % significa que el monto final
+es $M = 1.18\,C$. Sustituyendo en la fórmula del interés compuesto:
+
+$$
+1.18\,C = C\,(1 + 0.159)^t
+\quad\Longrightarrow\quad
+t = \frac{\ln(1.18)}{\ln(1.159)}
+$$
+
+```{r}
+i <- 0.159           # Tasa efectiva anual
+crecimiento <- 0.18  # Crecimiento buscado
+
+t_anios <- log(1 + crecimiento) / log(1 + i)
+t_dias <- t_anios * 365
+
+t_anios
+t_dias
+```
+
+**Conclusión.** El capital tarda `r round(t_anios, 4)` años, es decir,
+`r round(t_dias, 1)` días, en crecer un 18 %. Considerando años de 365 días,
+el crecimiento se alcanza en el día `r ceiling(t_dias)`.
+
+## Resumen
+
+- La tasa efectiva anual mide el rendimiento real de un año; una tasa nominal
+  $i^{(m)}$ se capitaliza $m$ veces al año y su efectiva equivalente es mayor.
+- La tasa de interés $i$, la tasa de descuento $d$ y la fuerza de interés
+  $\delta$ son formas equivalentes de medir el costo del dinero.
+- Para comparar tasas con distinta capitalización, primero hay que
+  convertirlas a una misma base, por ejemplo, a tasas efectivas anuales.
+- La función `rate.conv()` de FinancialMath realiza estas conversiones y
+  devuelve una matriz cuyos valores se consultan por nombre.

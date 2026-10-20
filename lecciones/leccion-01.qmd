@@ -1,94 +1,206 @@
 ---
-title: "Lección 1: R Como una gran calculadora"
-description: "R Como una gran calculadora"
-date: "2026-01-01"
+title: "Lección 1: Introducción a R"
+description: "Qué es R, cómo trabajar con RStudio y cuáles son los objetos básicos del lenguaje."
+date: "2026-10-19"
 ---
 
-```{r}
-library(dplyr)
-```
+En este curso usaremos R como una calculadora financiera: una herramienta que
+nos permite resolver desde un cálculo de interés simple hasta problemas de
+anualidades, bonos y amortización, con resultados exactos y procedimientos que
+podemos revisar y reutilizar. Esta primera lección presenta el entorno de
+trabajo y los objetos con los que construiremos todo lo demás.
 
+## ¿Qué es R?
 
-## R... ¿Qué es R?
+R es un lenguaje de programación y un entorno de trabajo diseñado para el
+análisis estadístico y la visualización de datos. Fue creado a principios de
+la década de 1990 por Ross Ihaka y Robert Gentleman en la Universidad de
+Auckland, y hoy es una herramienta de uso común en la investigación, la
+industria y las finanzas.
 
-R es un lenguaje de programación y un entorno diseñado para análisis estadístico y visualización de datos.
-Creado en 1939 por Ross Ihaka y Robert Gentleman, R fue evolucionando hasta convertirse en una herramienta poderosa para investigadores de múltiples disciplinas.
-En el mundo financiero R nos es útil por su capacidad para realiar cálculo cimplejos que tomarian tal vez el doble de hacerse en una calculadora financiera, R nos permite hacer des cálculos básicos de interés simple, hasta modelaciones y predicciones avanzadas.
-Este trabajo explora como R puede ser utilizado como una calculadora financiera, simplificando cálculos habituales y catalizando el aprendizaje de matemáticas financieras.
+Para las matemáticas financieras, R ofrece tres ventajas frente a una
+calculadora financiera:
 
-## Rstudio\|Posit
+- **Precisión y rapidez:** realiza en segundos cálculos que a mano serían
+  largos y propensos a errores.
+- **Reproducibilidad:** cada cálculo queda escrito, por lo que puede revisarse,
+  corregirse y repetirse con otros datos.
+- **Extensibilidad:** existen paquetes especializados, como `FinancialMath`,
+  que incorporan las fórmulas más usadas en la disciplina.
 
-Rstudio ahora llamado Posit , es un entorno de desarrollo integrado IDE, diseñado para trabajar cómodamente con R, podemos ver esto como si Posit fuera una caja de arena y R la arena.
-Posit nos ofrece la interfaz que nos permite escribir código , ejecutar comandaos y ver los resultados de una forma organizada.
-Posit tiene una versión en la nube, **Posit Cloud** nos permite programar en R desde cualquier navegador sin la necesidad de instalar algún programa en la computadora, ni tampoco depender del procesamiento de nuestra computadora personal.
+## RStudio y Posit Cloud
 
-## ¿Objetos en R?
+**RStudio** es un entorno de desarrollo integrado (IDE) para trabajar con R,
+desarrollado por la empresa **Posit**. Si R es el motor que realiza los
+cálculos, RStudio es el tablero desde el cual lo manejamos: ofrece en una sola
+ventana un editor para escribir código, una consola para ejecutarlo y paneles
+para consultar resultados, gráficos y archivos.
 
-R es un lenguaje que combina características de lenguajes funcionales y lenguajes orientados a objetos.
-Podemos decir que R no es un lenguaje puramente orientado a objetos como Java o Python, pero una de sus bondades es que nos permite trabajar con objetos y aplicar alguno principios de la programación orientada a objetos.
+Posit ofrece además **Posit Cloud**, una versión de RStudio que funciona
+directamente en el navegador. Permite programar en R sin instalar nada en la
+computadora y sin depender de su capacidad de procesamiento, por lo que es una
+buena opción para comenzar.
 
-### Tipos de Objetos en R
+## Objetos en R
 
-# 1. Vectores
-
-```        
-Conjunto de elementos del mismo tipo ('numéricos','strings', 'lógicos', etc.)
-```
-
-¿Cómo se crean?
-
-Usamos la función `c ('a','b,'c')`
-
-```{r}
-numeros =c(1,2,3,4)
-nombres =c('Carlos','Pedro','Erick','Jaime')
-print(nombres)
-```
-
-# 2. Matrices:
-
-Una **matriz** en R es una estructura de datos bidimensional que almacena elementos del mismo tipo (numéricos, caracteres, lógicos, etc.) organizados en filas y columnas.
-¿Cómo se crean?
-Usamos la función `matrix()` especificando el número de filas (`nrow`) y/o columnas (`ncol`).
+En R, todo lo que manipulamos es un **objeto**: un número, un texto, una tabla
+o el resultado de un cálculo. Para guardar un objeto le asignamos un nombre con
+el operador `<-`:
 
 ```{r}
-# Crear una matriz de 3 filas y 2 columnas con números del 1 al 6
-mi_matriz = matrix(1:6, nrow = 3, ncol = 2)
-
-# Imprimir la matriz
-print(mi_matriz)
+capital <- 10000
+tasa <- 0.12
+capital * tasa
 ```
 
-Acceder a elementos de una matriz:
+A partir de ese momento, podemos usar el nombre del objeto en lugar de su
+valor. R también acepta el signo `=` para asignar, pero `<-` es la convención
+más extendida y la que usaremos en el curso.
+
+R ofrece varios tipos de objetos para organizar la información. Los cuatro más
+importantes son los vectores, las matrices, las listas y los *data frames*.
+
+### Vectores
+
+Un **vector** es un conjunto de elementos del mismo tipo: números, textos o
+valores lógicos (`TRUE` o `FALSE`). Se crea con la función `c()`, que combina
+los elementos que le indiquemos.
 
 ```{r}
-# Acceder al elemento en la fila 2, columna 1
-mi_matriz[2, 1]
+pagos <- c(1500, 1500, 2000, 2500)
+meses <- c("Enero", "Febrero", "Marzo", "Abril")
 
-# Acceder a la fila 3 completa
-mi_matriz[3, ]
-
-# Acceder a la columna 2 completa
-mi_matriz[, 2]
+pagos
+meses
 ```
 
-Operaciones con Matrices:
+Las operaciones sobre un vector se aplican a cada uno de sus elementos, lo que
+resulta muy práctico para los cálculos financieros:
 
 ```{r}
-# Crear otra matriz
-otra_matriz = matrix(7:12, nrow = 3, ncol = 2)
+# Pagos con un incremento del 10 %
+pagos * 1.10
 
-# Sumar dos matrices
-suma_matrices = mi_matriz + otra_matriz
-
-# Multiplicación de matrices
-producto_matrices = mi_matriz %*% t(otra_matriz)
-
-# Transponer una matriz
-transpuesta = t(mi_matriz)
-
-# Imprimir resultados
-print(suma_matrices)
-print(producto_matrices)
-print(transpuesta)
+# Suma total de los pagos
+sum(pagos)
 ```
+
+### Matrices
+
+Una **matriz** es una estructura bidimensional que organiza elementos del mismo
+tipo en filas y columnas. Se crea con la función `matrix()`, indicando el
+número de filas (`nrow`) o de columnas (`ncol`).
+
+```{r}
+# Matriz de 3 filas y 2 columnas con los números del 1 al 6
+mi_matriz <- matrix(1:6, nrow = 3, ncol = 2)
+mi_matriz
+```
+
+Para consultar sus elementos usamos corchetes con la forma `[fila, columna]`.
+Si dejamos vacía una de las dos posiciones, obtenemos la fila o la columna
+completa:
+
+```{r}
+mi_matriz[2, 1]  # Elemento de la fila 2, columna 1
+mi_matriz[3, ]   # Fila 3 completa
+mi_matriz[, 2]   # Columna 2 completa
+```
+
+Con las matrices podemos realizar operaciones de álgebra lineal, como la suma,
+la multiplicación matricial (`%*%`) y la transposición (`t()`):
+
+```{r}
+otra_matriz <- matrix(7:12, nrow = 3, ncol = 2)
+
+mi_matriz + otra_matriz        # Suma elemento a elemento
+mi_matriz %*% t(otra_matriz)   # Producto matricial
+t(mi_matriz)                   # Transpuesta
+```
+
+Más adelante veremos que varias funciones financieras devuelven sus resultados
+en forma de matriz, por lo que conviene familiarizarse con ellas desde ahora.
+
+### Listas
+
+Una **lista** puede reunir elementos de distinto tipo y tamaño: vectores,
+matrices, textos, valores lógicos e incluso otras listas. Se crea con la
+función `list()`, asignando un nombre a cada elemento.
+
+```{r}
+credito <- list(
+  cliente = "Ana Torres",
+  monto = 50000,
+  tasas = c(0.12, 0.15),
+  aprobado = TRUE
+)
+
+credito
+```
+
+Para consultar un elemento usamos el operador `$` seguido de su nombre, o bien
+dobles corchetes `[[ ]]` con su nombre o su posición:
+
+```{r}
+credito$monto
+credito[["tasas"]]
+credito[[1]]
+```
+
+También podemos modificar elementos existentes o agregar nuevos:
+
+```{r}
+credito$monto <- 60000      # Modificar un elemento
+credito$plazo_meses <- 24   # Agregar un elemento nuevo
+
+credito
+```
+
+### Data frames
+
+Un **data frame** almacena datos en forma de tabla. Se parece a una matriz,
+pero cada columna puede contener un tipo de dato diferente, lo que lo convierte
+en la estructura más usada para trabajar con información real. Se crea con la
+función `data.frame()`.
+
+```{r}
+clientes <- data.frame(
+  nombre = c("Carlos", "Pedro", "Erika"),
+  edad = c(25, 30, 28),
+  ingreso = c(18000, 25000, 22000),
+  tiene_credito = c(TRUE, FALSE, TRUE)
+)
+
+clientes
+```
+
+Podemos consultar una columna con `$`, o una fila, una columna o un valor
+específico con corchetes:
+
+```{r}
+clientes$edad        # Columna "edad"
+clientes[1, ]        # Primera fila
+clientes[2, "ingreso"]  # Ingreso del segundo cliente
+```
+
+Para agregar una columna basta con asignarle valores, y para modificar un dato
+indicamos su posición:
+
+```{r}
+clientes$antiguedad <- c(2, 5, 3)  # Nueva columna (años como cliente)
+clientes[1, "edad"] <- 26          # Corregir un valor
+
+clientes
+```
+
+## Resumen
+
+- R es un lenguaje para análisis de datos que usaremos como calculadora
+  financiera; RStudio y Posit Cloud son los entornos para trabajar con él.
+- Los objetos se crean con el operador de asignación `<-`.
+- Los **vectores** guardan elementos del mismo tipo; las **matrices** los
+  organizan en filas y columnas; las **listas** reúnen elementos de cualquier
+  tipo; y los **data frames** almacenan tablas de datos.
+
+En la siguiente lección aprenderemos a dar instrucciones más elaboradas a R
+mediante condicionales, ciclos y funciones.
