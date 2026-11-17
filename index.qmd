@@ -2,38 +2,46 @@
 title: "Matemáticas financieras"
 ---
 
-Las **matemáticas financieras** estudian cómo cambia el valor del dinero a lo
-largo del tiempo. Un peso hoy no vale lo mismo que un peso dentro de un año:
-puede invertirse, generar intereses o perder poder de compra por la inflación.
-Esta disciplina nos da las herramientas para medir esos cambios y comparar
-cantidades que ocurren en momentos distintos.
+En un mundo globalizado y cambiante, donde las decisiones financieras cobran una gran
+relevancia, es imprescindible para toda persona conocer los fundamentos del
+manejo del dinero a través del tiempo. Ya sea que quieras desarrollar un plan
+de financiamiento para tus clientes, que busques medir el impacto de la
+inflación en tu poder adquisitivo, o bien, que quieras decidir entre diferentes
+planes de financiamiento para la compra de un automóvil, es preciso que tengas
+nociones claras de Matemáticas Financieras para tomar decisiones que, a la
+larga, te ubiquen en una mejor posición financiera.
 
-## ¿Qué estudian?
+Este sitio te ayudará a entender cómo funciona una tasa de interés, a comparar
+tasas que se expresan de distintas formas y a determinar cuánto vale hoy una
+serie de pagos futuros. Se explican, a través de ejemplos cotidianos,
+diferentes tipos de anualidades y perpetuidades, y cómo calcular la tasa de
+interés o los pagos involucrados en ellas.
 
-- **Interés simple y compuesto:** cómo crece un capital cuando genera intereses.
-- **Valor presente y valor futuro:** cuánto vale hoy un pago que recibiremos
-  mañana, y viceversa.
-- **Tasas de interés:** nominales, efectivas y equivalentes, y cómo convertir
-  entre ellas.
-- **Anualidades:** series de pagos periódicos, como rentas, ahorros o
-  mensualidades.
-- **Amortización:** cómo se paga una deuda a lo largo del tiempo.
+## Objetivo
 
-## ¿Por qué son importantes?
+El objetivo de este sitio es que cualquier persona, aun sin conocimientos
+previos de Matemáticas Financieras ni de programación, entienda los fundamentos
+de esta disciplina y, más allá de memorizar una fórmula, sea capaz de
+comprender lo que sucede con el dinero a través del tiempo.
 
-Las decisiones con dinero están en todas partes, y casi siempre involucran el
-tiempo:
+Para realizar los cálculos utilizaremos R, un lenguaje de programación cuyos
+usos van mucho más allá de lo que veremos aquí. Lo elegimos porque, a través de
+sus librerías, nos facilita los cálculos financieros, de manera que podamos
+dedicar nuestra atención a comprender cada concepto.
 
-- **En la vida diaria:** elegir entre pagar de contado o a meses, comparar
-  créditos o tarjetas, o planear un ahorro para el retiro.
-- **En las empresas:** evaluar si un proyecto conviene, decidir cómo
-  financiarlo y calcular el costo real de una deuda.
-- **En los mercados:** valuar bonos, acciones y otros instrumentos financieros.
+En cada lección encontrarás ejemplos resueltos paso a paso que te facilitarán
+la comprensión de las ideas expuestas.
 
-Entender estos conceptos permite tomar mejores decisiones, detectar costos
-ocultos y no depender únicamente de lo que dice el banco o el vendedor.
+## ¿Cómo utilizar este sitio?
 
-## Sobre este sitio
+En la sección **Lecciones**, en la barra superior, encontrarás todo el
+contenido. Te recomendamos seguirlas en orden, ya que cada lección retoma los
+conceptos de las anteriores; las primeras están dedicadas a los fundamentos
+de R.
 
-Aquí encontrarás lecciones que combinan la teoría con ejemplos prácticos en R.
-Ve a **Lecciones** en la barra superior para ver todo el contenido disponible.
+A lo largo de las lecciones encontrarás bloques de código en R dentro de un
+recuadro gris, con su resultado justo debajo. Para utilizarlos, pasa el cursor
+sobre el recuadro, da clic en el ícono de copiar de la esquina superior derecha
+y pégalo en RStudio o en Posit Cloud. Te invitamos a modificar las cantidades,
+las tasas o los plazos y observar cómo cambian los resultados: es la mejor
+manera de comprender las ideas expuestas.

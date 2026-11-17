@@ -37,6 +37,10 @@ format:
     include-in-header:
       text: |
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap">
+        <style>
+          /* Párrafos justificados; la división de palabras evita espacios grandes */
+          main p { text-align: justify; hyphens: auto; }
+        </style>
     toc: true
     toc-title: "En esta página"
     lang: es
