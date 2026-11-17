@@ -5,7 +5,7 @@ title: "Matemáticas financieras"
 En un mundo globalizado y cambiante, donde las decisiones financieras cobran una gran
 relevancia, es imprescindible para toda persona conocer los fundamentos del
 manejo del dinero a través del tiempo. Ya sea que quieras desarrollar un plan
-de financiamiento para tus clientes, que busques medir el impacto de la
+de financiamiento, que busques medir el impacto de la
 inflación en tu poder adquisitivo, o bien, que quieras decidir entre diferentes
 planes de financiamiento para la compra de un automóvil, es preciso que tengas
 nociones claras de Matemáticas Financieras para tomar decisiones que, a la
