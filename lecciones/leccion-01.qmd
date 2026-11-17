@@ -4,29 +4,30 @@ description: "Qué es R, cómo trabajar con RStudio y cuáles son los objetos b�
 date: "2026-10-19"
 ---
 
-En este curso usaremos R como una calculadora financiera: una herramienta que
-nos permite resolver desde un cálculo de interés simple hasta problemas de
-anualidades, bonos y amortización, con resultados exactos y procedimientos que
-podemos revisar y reutilizar. Esta primera lección presenta el entorno de
-trabajo y los objetos con los que construiremos todo lo demás.
+En esta primera lección conocerás qué es R y por qué lo utilizaremos a lo largo
+del curso, así como RStudio y Posit Cloud, los entornos desde los cuales podrás
+escribir y ejecutar tu código. Posteriormente, revisaremos los objetos básicos
+del lenguaje, es decir, los vectores, las matrices, las listas y los *data
+frames*, que serán la base para realizar los cálculos financieros de las
+siguientes lecciones.
 
 ## ¿Qué es R?
 
-R es un lenguaje de programación y un entorno de trabajo diseñado para el
-análisis estadístico y la visualización de datos. Fue creado a principios de
+R es un lenguaje de programación diseñado para el análisis estadístico y la visualización de datos. Fue creado a principios de
 la década de 1990 por Ross Ihaka y Robert Gentleman en la Universidad de
 Auckland, y hoy es una herramienta de uso común en la investigación, la
 industria y las finanzas.
 
-Para las matemáticas financieras, R ofrece tres ventajas frente a una
-calculadora financiera:
-
-- **Precisión y rapidez:** realiza en segundos cálculos que a mano serían
-  largos y propensos a errores.
-- **Reproducibilidad:** cada cálculo queda escrito, por lo que puede revisarse,
-  corregirse y repetirse con otros datos.
-- **Extensibilidad:** existen paquetes especializados, como `FinancialMath`,
-  que incorporan las fórmulas más usadas en la disciplina.
+Una de sus principales características es que se trata de software libre y
+gratuito, por lo que cualquier persona puede instalarlo en su computadora sin
+costo alguno. Además, cuenta con una amplia comunidad de usuarios que desarrolla
+y comparte librerías, herramientas que puedes instalar para resolver problemas
+particulares sin necesidad de programarlos desde cero. Actualmente existen más de
+20 000 librerías disponibles en CRAN, el repositorio oficial de R, entre las que
+se encuentran, por ejemplo, `ggplot2`, para la elaboración de gráficas; `dplyr`, para la
+manipulación de datos; `quantmod`, para descargar y analizar información de los
+mercados financieros, o bien, `FinancialMath`, que utilizaremos a lo largo de
+este curso para realizar cálculos financieros.
 
 ## RStudio y Posit Cloud
 
@@ -40,6 +41,43 @@ Posit ofrece además **Posit Cloud**, una versión de RStudio que funciona
 directamente en el navegador. Permite programar en R sin instalar nada en la
 computadora y sin depender de su capacidad de procesamiento, por lo que es una
 buena opción para comenzar.
+
+### ¿Cómo utilizar Posit Cloud?
+
+Para comenzar, ingresa a [posit.cloud](https://posit.cloud) y crea una cuenta
+gratuita desde la opción *Sign Up*; también puedes registrarte con tu cuenta de
+Google o de GitHub. Una vez dentro, encontrarás tu espacio de trabajo
+(*Your Workspace*), donde se guardarán todos tus proyectos. Para crear uno
+nuevo, da clic en el botón **New Project** y selecciona
+**New RStudio Project**. Después de unos segundos, se abrirá RStudio
+directamente en tu navegador.
+
+![Creación de un nuevo proyecto en Posit Cloud.](img/posit-01-nuevo-proyecto.png)
+
+Dentro del proyecto, el siguiente paso es crear un script, es decir, un archivo
+en el que escribirás tu código para poder guardarlo, modificarlo y volver a
+ejecutarlo cuando lo necesites. Para ello, ve al menú **File**, selecciona
+**New File** y después **R Script**.
+
+![Creación de un nuevo script de R.](img/posit-02-nuevo-script.png)
+
+Una vez creado el script, la ventana de RStudio quedará dividida en cuatro
+paneles. En la parte superior izquierda se encuentra el editor, donde escribirás
+tu código; debajo de él, la consola, que muestra los resultados al ejecutarlo.
+Del lado derecho, en la parte superior, el panel *Environment* muestra los
+objetos que has creado, mientras que en la parte inferior podrás consultar tus
+archivos, gráficas y la ayuda de R.
+
+Para ejecutar el código, selecciona las líneas que deseas correr y da clic en el
+botón **Run**, o bien, presiona `Ctrl + Enter` (`Cmd + Enter` en Mac). En el
+siguiente ejemplo, se guardan un capital y una tasa de interés, y se calcula el
+interés correspondiente; observa cómo el resultado aparece en la consola y los
+objetos en el panel *Environment*.
+
+![Ejecución de un script en RStudio.](img/posit-03-script.png)
+
+Con esto tendrás todo lo necesario para reproducir los ejemplos de este curso:
+basta con copiar el código de cada lección, pegarlo en tu script y ejecutarlo.
 
 ## Objetos en R
 
