@@ -76,7 +76,7 @@ La tasa es efectiva anual, por lo que `ic = 1`; los pagos son mensuales, por lo
 que `pf = 12`.
 
 ```{r}
-anualidad <- annuity.level(n = 10, pmt = 200, i = 0.05, ic = 1, pf = 12,
+anualidad = annuity.level(n = 10, pmt = 200, i = 0.05, ic = 1, pf = 12,
                            imm = TRUE, plot = TRUE)
 anualidad
 ```
@@ -117,7 +117,7 @@ periodo.
 En este caso, el dato desconocido es `n`:
 
 ```{r}
-anualidad_arit <- annuity.arith(fv = 7073.37, n = NA, p = 100, q = 20,
+anualidad_arit = annuity.arith(fv = 7073.37, n = NA, p = 100, q = 20,
                                 i = 0.05, ic = 1, pf = 12, imm = FALSE)
 anualidad_arit
 ```
@@ -143,7 +143,7 @@ función recibe `p`, el primer pago, y `k`, la tasa de crecimiento por periodo.
 > efectivo anual, ¿cuál es el valor presente de todas las rentas?
 
 ```{r}
-renta <- annuity.geo(n = 12, p = 5000, k = 0.04, i = 0.10, ic = 1, pf = 1,
+renta = annuity.geo(n = 12, p = 5000, k = 0.04, i = 0.10, ic = 1, pf = 1,
                      imm = TRUE)
 renta
 ```
@@ -165,7 +165,7 @@ buscamos el monto de cada pago. La tasa es nominal mensual, así que `ic = 12`,
 y los pagos son mensuales, así que `pf = 12`.
 
 ```{r}
-ejercicio_1 <- annuity.level(fv = 48501.68, n = 15, i = 0.063, ic = 12,
+ejercicio_1 = annuity.level(fv = 48501.68, n = 15, i = 0.063, ic = 12,
                              pf = 12, imm = TRUE)
 ejercicio_1["PMT", 1]
 ```
@@ -188,11 +188,11 @@ $$
 $$
 
 ```{r}
-pagos <- annuity.level(pmt = 95000, n = 10, i = 0.1236, ic = 12, pf = 12,
+pagos = annuity.level(pmt = 95000, n = 10, i = 0.1236, ic = 12, pf = 12,
                        imm = TRUE)
 
-vp_pagos <- pagos["PV", 1]
-precio <- vp_pagos / 0.85
+vp_pagos = pagos["PV", 1]
+precio = vp_pagos / 0.85
 
 vp_pagos
 precio

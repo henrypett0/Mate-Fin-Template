@@ -93,7 +93,7 @@ La tasa dada es nominal semestral, por lo que `rate = 0.06` y `conv = 2`. Como
 queremos la equivalente nominal mensual, `nom = 12`.
 
 ```{r}
-tasas <- rate.conv(rate = 0.06, conv = 2, type = "interest", nom = 12)
+tasas = rate.conv(rate = 0.06, conv = 2, type = "interest", nom = 12)
 tasas
 ```
 
@@ -144,15 +144,15 @@ tasas efectivas anuales y elegimos la menor, pues se trata de un préstamo.
 
 ```{r}
 # Opción A: 20.4 % nominal mensual
-efectiva_A <- rate.conv(rate = 0.204, conv = 12)["eff", "i"]
+efectiva_A = rate.conv(rate = 0.204, conv = 12)["eff", "i"]
 
 # Opción B: 21.5 % nominal semestral
-efectiva_B <- rate.conv(rate = 0.215, conv = 2)["eff", "i"]
+efectiva_B = rate.conv(rate = 0.215, conv = 2)["eff", "i"]
 
 # Opción C: ya es una tasa efectiva anual
-efectiva_C <- 0.223
+efectiva_C = 0.223
 
-opciones <- data.frame(
+opciones = data.frame(
   opcion = c("A: 20.4 % nominal mensual",
              "B: 21.5 % nominal semestral",
              "C: 22.3 % efectiva anual"),
@@ -183,11 +183,11 @@ t = \frac{\ln(1.18)}{\ln(1.159)}
 $$
 
 ```{r}
-i <- 0.159           # Tasa efectiva anual
-crecimiento <- 0.18  # Crecimiento buscado
+i = 0.159           # Tasa efectiva anual
+crecimiento = 0.18  # Crecimiento buscado
 
-t_anios <- log(1 + crecimiento) / log(1 + i)
-t_dias <- t_anios * 365
+t_anios = log(1 + crecimiento) / log(1 + i)
+t_dias = t_anios * 365
 
 t_anios
 t_dias

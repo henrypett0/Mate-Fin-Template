@@ -42,11 +42,11 @@ peso pagadero dentro de un periodo.
 dentro de 3 años?
 
 ```{r}
-vf <- 50000
-i <- 0.10
-t <- 3
+vf = 50000
+i = 0.10
+t = 3
 
-vp <- vf / (1 + i)^t
+vp = vf / (1 + i)^t
 vp
 ```
 
@@ -108,10 +108,10 @@ Conviene activar solo una de las dos gráficas en cada llamada.
 Primero analizamos los ingresos futuros:
 
 ```{r}
-ingresos <- c(200, 300, 400)
-anios <- c(1, 2, 3)
+ingresos = c(200, 300, 400)
+anios = c(1, 2, 3)
 
-flujos <- cf.analysis(cf = ingresos, times = anios, i = 0.10, time.d = TRUE)
+flujos = cf.analysis(cf = ingresos, times = anios, i = 0.10, time.d = TRUE)
 ```
 
 El diagrama de tiempo muestra cada pago en el periodo en que ocurre y, a la
@@ -121,9 +121,9 @@ contiene el valor presente de los ingresos. Con ella calculamos el valor
 presente neto:
 
 ```{r}
-vp_ingresos <- flujos["PV", 1]
+vp_ingresos = flujos["PV", 1]
 vp_ingresos
-vpn <- -600 + vp_ingresos
+vpn = -600 + vp_ingresos
 vpn
 ```
 
@@ -216,17 +216,17 @@ Comparemos las aproximaciones con el cambio real si la tasa sube del 10 % al
 11 %:
 
 ```{r}
-delta_i <- 0.01
-d_mod <- flujos["MOD D", 1]
-c_mod <- flujos["MOD C", 1]
+delta_i = 0.01
+d_mod = flujos["MOD D", 1]
+c_mod = flujos["MOD C", 1]
 
 # Cambio real en el valor presente
-vp_nuevo <- sum(ingresos / (1 + 0.11)^anios)
-cambio_real <- vp_nuevo / vp_ingresos - 1
+vp_nuevo = sum(ingresos / (1 + 0.11)^anios)
+cambio_real = vp_nuevo / vp_ingresos - 1
 
 # Aproximaciones
-solo_duracion <- -d_mod * delta_i
-con_convexidad <- -d_mod * delta_i + 0.5 * c_mod * delta_i^2
+solo_duracion = -d_mod * delta_i
+con_convexidad = -d_mod * delta_i + 0.5 * c_mod * delta_i^2
 
 round(c(real = cambio_real,
         solo_duracion = solo_duracion,

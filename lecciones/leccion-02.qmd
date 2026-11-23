@@ -13,7 +13,7 @@ A lo largo de la lección trabajaremos con el siguiente *data frame* de
 clientes:
 
 ```{r}
-clientes <- data.frame(
+clientes = data.frame(
   nombre = c("Carlos", "Pedro", "Erika", "Lucía"),
   edad = c(26, 30, 28, 35),
   ingreso = c(18000, 25000, 22000, 31000),
@@ -39,7 +39,7 @@ llaves solo si la condición es verdadera. Con `else` indicamos qué hacer en
 caso contrario.
 
 ```{r}
-tasa <- 0.18
+tasa = 0.18
 
 if (tasa > 0.15) {
   print("La tasa está por encima del 15 %.")
@@ -53,7 +53,7 @@ de una columna, usamos la función `ifelse()`. Recibe la condición, el valor
 para los casos verdaderos y el valor para los falsos:
 
 ```{r}
-clientes$segmento <- ifelse(clientes$ingreso > 24000, "Alto", "Estándar")
+clientes$segmento = ifelse(clientes$ingreso > 24000, "Alto", "Estándar")
 
 clientes
 ```
@@ -67,7 +67,7 @@ El ciclo `for` recorre uno a uno los elementos de un vector y ejecuta el mismo
 bloque de código para cada uno.
 
 ```{r}
-plazos <- c(6, 12, 24)
+plazos = c(6, 12, 24)
 
 for (n in plazos) {
   print(paste("Plazo de", n, "meses"))
@@ -91,12 +91,12 @@ serán necesarias. Por ejemplo, ¿cuántos años tarda en duplicarse un capital
 invertido al 10 % anual?
 
 ```{r}
-capital <- 1000
-anios <- 0
+capital = 1000
+anios = 0
 
 while (capital < 2000) {
-  capital <- capital * 1.10
-  anios <- anios + 1
+  capital = capital * 1.10
+  anios = anios + 1
 }
 
 anios
@@ -117,8 +117,8 @@ $I = C \cdot i \cdot t$, donde $C$ es el capital, $i$ la tasa anual y $t$ el
 tiempo en años:
 
 ```{r}
-interes_simple <- function(capital, tasa, tiempo) {
-  interes <- capital * tasa * tiempo
+interes_simple = function(capital, tasa, tiempo) {
+  interes = capital * tasa * tiempo
   return(interes)
 }
 
@@ -131,7 +131,7 @@ Podemos asignar un valor por defecto a un argumento. Si al llamar a la función
 no lo especificamos, R usará ese valor:
 
 ```{r}
-interes_simple <- function(capital, tasa, tiempo = 1) {
+interes_simple = function(capital, tasa, tiempo = 1) {
   capital * tasa * tiempo
 }
 
@@ -150,7 +150,7 @@ interés que obtendría cada cliente si invirtiera el equivalente a un mes de su
 ingreso durante un año, al 5 % de interés simple:
 
 ```{r}
-clientes$interes_inversion <- interes_simple(clientes$ingreso, 0.05)
+clientes$interes_inversion = interes_simple(clientes$ingreso, 0.05)
 
 clientes
 ```

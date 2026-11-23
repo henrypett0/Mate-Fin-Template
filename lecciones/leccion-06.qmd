@@ -58,12 +58,12 @@ Como antes, dejamos como `NA` (u omitimos) el dato que queremos calcular.
 > si son anticipados.
 
 ```{r}
-vencida <- perpetuity.level(pmt = 200, i = 0.12, ic = 2, pf = 12, imm = TRUE)
+vencida = perpetuity.level(pmt = 200, i = 0.12, ic = 2, pf = 12, imm = TRUE)
 vencida
 ```
 
 ```{r}
-anticipada <- perpetuity.level(pmt = 200, i = 0.12, ic = 2, pf = 12, imm = FALSE)
+anticipada = perpetuity.level(pmt = 200, i = 0.12, ic = 2, pf = 12, imm = FALSE)
 anticipada["PV", 1]
 ```
 
@@ -85,7 +85,7 @@ pagos (`i^(12)`).
 Ahora el dato desconocido es el pago:
 
 ```{r}
-beca <- perpetuity.level(pv = 50000, pmt = NA, i = 0.08, ic = 1, pf = 1,
+beca = perpetuity.level(pv = 50000, pmt = NA, i = 0.08, ic = 1, pf = 1,
                          imm = TRUE)
 beca["PMT", 1]
 ```
@@ -114,7 +114,7 @@ incremento por periodo.
 > tasa de interés efectiva anual paga?
 
 ```{r}
-perp_arit <- perpetuity.arith(pv = 36000, p = 10, q = 3, i = NA, ic = 1,
+perp_arit = perpetuity.arith(pv = 36000, p = 10, q = 3, i = NA, ic = 1,
                               pf = 12, imm = FALSE)
 perp_arit
 ```
@@ -147,7 +147,7 @@ constante.
 > hoy?
 
 ```{r}
-accion <- perpetuity.geo(p = 1000, k = 0.03, i = 0.10, ic = 1, pf = 1,
+accion = perpetuity.geo(p = 1000, k = 0.03, i = 0.10, ic = 1, pf = 1,
                          imm = TRUE)
 accion
 ```

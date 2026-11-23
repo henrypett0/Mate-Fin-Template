@@ -25,6 +25,12 @@ execute:
   message: false
   warning: false
 
+# Ancho máximo de las salidas de R, para que quepan en la página
+knitr:
+  opts_chunk:
+    R.options:
+      width: 60
+
 format:
   html:
     # Estilo inspirado en devitoproject.org: el tema por defecto de Quarto
