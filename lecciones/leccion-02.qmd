@@ -4,13 +4,20 @@ description: "Condicionales, ciclos, funciones y manipulación de datos con dply
 date: "2026-10-19"
 ---
 
-En la lección anterior conocimos los objetos de R. Ahora aprenderemos a darle
-instrucciones más elaboradas: tomar decisiones según una condición, repetir
-tareas, escribir nuestras propias funciones y transformar tablas de datos con
-el paquete **dplyr**.
+A lo largo de esta lección veremos cómo escribir instrucciones más complejas en
+R. Comenzaremos con las estructuras de control, es decir, los condicionales,
+que nos permiten ejecutar una instrucción solo cuando se cumple una condición,
+y los ciclos, que nos permiten repetir una misma tarea varias veces. Luego,
+revisaremos cómo crear nuestras propias funciones para reutilizar un mismo
+cálculo sin tener que escribirlo de nuevo. Por último, trabajaremos con
+`dplyr`, una librería que nos facilita filtrar, ordenar, transformar y resumir
+la información de un *data frame*.
 
-A lo largo de la lección trabajaremos con el siguiente *data frame* de
-clientes:
+Para los ejemplos, utilizaremos el siguiente *data frame*, que contiene la
+información de cuatro clientes. Antes de continuar, copia el código y ejecútalo
+en tu script de R, ya que todos los ejemplos de esta lección utilizan el objeto
+`clientes`; de lo contrario, R te mostrará un error indicando que no lo
+encuentra.
 
 ```{r}
 clientes = data.frame(
@@ -25,22 +32,83 @@ clientes
 
 ## Estructuras de control
 
-Las **estructuras de control** determinan qué instrucciones se ejecutan y
-cuántas veces. Las más comunes son:
+Hasta ahora, R ha ejecutado nuestras instrucciones una tras otra, en el mismo
+orden en que las escribimos. Con las **estructuras de control** podemos
+decidir qué instrucciones se ejecutan y cuántas veces se repiten. Las más
+utilizadas son:
 
-- **Condicionales** (`if`, `else`): ejecutan un bloque de código solo cuando
-  se cumple una condición.
-- **Ciclos** (`for`, `while`): repiten un bloque de código varias veces.
+- **Los condicionales** (`if`, `else`), que ejecutan un bloque de código
+  únicamente cuando se cumple una condición.
+- **Los ciclos** (`for`, `while`), que repiten un bloque de código varias
+  veces.
 
-### Condicionales
+### Comparaciones y operadores lógicos
 
-La instrucción `if` evalúa una condición lógica y ejecuta el código entre
-llaves solo si la condición es verdadera. Con `else` indicamos qué hacer en
-caso contrario.
+Antes de revisar los condicionales, es necesario conocer cómo se escriben las
+condiciones en R. Una condición es una comparación cuyo resultado es un valor
+lógico, es decir, `TRUE` si se cumple o `FALSE` si no se cumple. Para
+escribirlas, contamos con los siguientes operadores:
+
+| Operador | Significado       | Ejemplo        |
+|----------|-------------------|----------------|
+| `>`      | Mayor que         | `tasa > 0.15`  |
+| `<`      | Menor que         | `tasa < 0.15`  |
+| `>=`     | Mayor o igual que | `tasa >= 0.15` |
+| `<=`     | Menor o igual que | `tasa <= 0.15` |
+| `==`     | Igual a           | `tasa == 0.18` |
+| `!=`     | Distinto de       | `tasa != 0.18` |
+
+Es importante no confundir el doble signo de igual `==`, que compara dos
+valores, con el signo `=`, que utilizamos para asignar un nombre a un objeto.
 
 ```{r}
 tasa = 0.18
 
+tasa > 0.15
+tasa == 0.18
+tasa != 0.18
+```
+
+Además, podemos combinar varias condiciones a través de los operadores
+lógicos:
+
+- `&`, que significa "y". El resultado es `TRUE` solo si **ambas** condiciones
+  se cumplen.
+- `|`, que significa "o". El resultado es `TRUE` si **al menos una** de las
+  condiciones se cumple.
+
+```{r}
+tasa > 0.10 & tasa < 0.20
+tasa < 0.10 | tasa > 0.15
+```
+
+En el primer caso, la tasa es mayor que 10 % y, al mismo tiempo, menor que
+20 %, por lo que el resultado es `TRUE`. En el segundo, aunque la tasa no es
+menor que 10 %, sí es mayor que 15 %, lo cual es suficiente para que el
+resultado sea `TRUE`.
+
+### Condicionales
+
+La instrucción `if` evalúa una condición y, si esta es verdadera, ejecuta el
+código que se encuentra entre llaves `{ }`:
+
+```{r}
+if (tasa > 0.15) {
+  print("La tasa está por encima del 15 %.")
+}
+```
+
+En este ejemplo, como la tasa es de 18 %, la condición se cumple y R ejecuta
+el código entre llaves. La función `print()` nos permite mostrar un mensaje en
+la consola. Si la condición no se cumpliera, R simplemente omitiría ese bloque
+y continuaría con el resto del código, sin mostrar ningún mensaje.
+
+En muchas ocasiones, esto es suficiente. Sin embargo, si además queremos
+indicar qué hacer cuando la condición es falsa, podemos agregar la instrucción
+`else`. Su uso es opcional, por lo que solo la escribimos cuando necesitamos
+una alternativa:
+
+```{r}
 if (tasa > 0.15) {
   print("La tasa está por encima del 15 %.")
 } else {
@@ -48,23 +116,162 @@ if (tasa > 0.15) {
 }
 ```
 
-Cuando queremos evaluar una condición sobre todos los elementos de un vector o
-de una columna, usamos la función `ifelse()`. Recibe la condición, el valor
-para los casos verdaderos y el valor para los falsos:
+Una forma sencilla de entender este código es leerlo en voz alta de la
+siguiente manera:
+
+> **Si** la tasa es mayor que 0.15, **entonces** imprime "La tasa está por
+> encima del 15 %"; **si no**, imprime "La tasa es menor o igual al 15 %".
+
+Así, R ejecutará el primer bloque si la condición se cumple y el segundo si no
+se cumple, de manera que siempre obtendremos un mensaje.
+
+Cuando necesitamos evaluar más de dos casos, podemos encadenar varias
+condiciones con `else if`. R las revisa en orden y ejecuta el bloque de la
+primera condición que se cumpla:
 
 ```{r}
-clientes$segmento = ifelse(clientes$ingreso > 24000, "Alto", "Estándar")
+ingreso = 22000
+
+if (ingreso > 24000) {
+  print("Segmento alto")
+} else if (ingreso > 20000) {
+  print("Segmento medio")
+} else {
+  print("Segmento estándar")
+}
+```
+
+En este caso, el código se lee de la siguiente manera:
+
+> **Si** el ingreso es mayor que 24 000, **entonces** imprime "Segmento alto";
+> **si no**, pero el ingreso es mayor que 20 000, **entonces** imprime
+> "Segmento medio"; **si no se cumple ninguna** de las condiciones anteriores,
+> imprime "Segmento estándar".
+
+Como el ingreso es de 22 000, la primera condición no se cumple, pero la
+segunda sí, por lo que R imprime "Segmento medio".
+
+#### Condicionales sobre vectores y data frames
+
+Hasta ahora, nuestras condiciones han evaluado un solo valor, como la tasa o el
+ingreso de un cliente. Sin embargo, ¿qué ocurre si queremos evaluar una
+condición sobre varios valores a la vez, como los ingresos de todos nuestros
+clientes? La instrucción `if` no nos sirve en este caso, ya que solo puede
+evaluar un valor a la vez. Para ello, R nos ofrece la función `ifelse()`, que
+se escribe de la siguiente manera:
+
+```r
+ifelse(condición, valor si se cumple, valor si no se cumple)
+```
+
+Veamos primero un ejemplo sencillo. Supongamos que tenemos los ingresos de
+cuatro personas y queremos clasificar cada uno como "Alto", si es mayor que
+24 000 pesos, o como "Estándar", en caso contrario:
+
+```{r}
+ingresos = c(18000, 25000, 22000, 31000)
+
+ifelse(ingresos > 24000, "Alto", "Estándar")
+```
+
+Al igual que con los condicionales anteriores, podemos leer esta instrucción
+de la siguiente manera:
+
+> Para cada ingreso, **si** es mayor que 24 000, **entonces** escribe "Alto";
+> **si no**, escribe "Estándar".
+
+Lo que hace R es revisar la condición para cada uno de los elementos del
+vector, en el mismo orden en que aparecen. El primer ingreso, 18 000, no supera
+los 24 000, por lo que obtiene "Estándar"; el segundo, 25 000, sí los supera,
+por lo que obtiene "Alto", y así sucesivamente. El resultado es un nuevo vector
+del mismo tamaño que el original.
+
+Ahora bien, ¿qué podemos escribir en cada una de las tres partes de la
+función?
+
+- **La condición** puede ser cualquier comparación, como las que revisamos al
+  inicio de la sección. Por lo general, se aplica sobre un vector, pero también
+  funciona con un solo valor, como `ifelse(0.18 > 0.15, "Alta", "Baja")`.
+- **Los valores** pueden ser textos, como en el ejemplo anterior, pero también
+  números, valores lógicos o incluso cálculos. Por ejemplo, para calcular una
+  comisión del 10 % sobre los ingresos mayores a 24 000 pesos y del 5 % sobre
+  el resto:
+
+  ```{r}
+  ifelse(ingresos > 24000, ingresos * 0.10, ingresos * 0.05)
+  ```
+
+  En este caso, R toma para cada posición el resultado del cálculo que
+  corresponde, de acuerdo con si la condición se cumple o no.
+
+- **Otra función `ifelse()`**, si necesitamos más de dos categorías, de la
+  misma manera que lo hacíamos con `else if`. Por ejemplo, para distinguir
+  entre ingresos altos, medios y estándar:
+
+  ```{r}
+  ifelse(ingresos > 24000, "Alto",
+         ifelse(ingresos > 20000, "Medio", "Estándar"))
+  ```
+
+Como cada columna de un *data frame* es un vector, podemos utilizar la misma
+función para clasificar a nuestros clientes. En este caso, guardaremos el
+resultado en una nueva columna llamada `segmento`, que R creará
+automáticamente al asignarle un valor con el operador `$`:
+
+```{r}
+clientes$segmento = ifelse(
+  clientes$ingreso > 24000, "Alto", "Estándar"
+)
 
 clientes
 ```
 
-En este ejemplo agregamos la columna `segmento`, que clasifica a cada cliente
-según si su ingreso supera los 24 000 pesos.
+Observa que ahora `clientes` tiene una quinta columna, `segmento`, en la que a
+cada cliente se le asignó "Alto" o "Estándar" de acuerdo con su ingreso.
 
 ### Ciclo `for`
 
-El ciclo `for` recorre uno a uno los elementos de un vector y ejecuta el mismo
-bloque de código para cada uno.
+El ciclo `for` repite un bloque de código una vez por cada elemento de una
+secuencia, es decir, de un conjunto de elementos ordenados que pueden
+recorrerse uno por uno, como un vector o una lista. Su estructura es la
+siguiente:
+
+```r
+for (elemento in secuencia) {
+  # Código que se repite
+}
+```
+
+Al igual que con los condicionales, podemos leer esta estructura en voz alta:
+
+> **Para cada** elemento de la secuencia, ejecuta el código que se encuentra
+> entre llaves.
+
+Si queremos que R imprima la palabra "Hola" tres veces, basta con indicarle una secuencia de tres elementos, como
+`1:3`:
+
+```{r}
+for (i in 1:3) {
+  print("Hola")
+}
+```
+
+> **Para cada** número `i` del 1 al 3, imprime "Hola".
+
+Como la secuencia tiene tres elementos, el código entre llaves se ejecutó tres
+veces. Además, en cada repetición, el objeto `i` toma el valor del
+siguiente elemento de la secuencia: en la primera vale 1, en la segunda vale 2
+y en la tercera vale 3. Podemos comprobarlo si, en lugar de imprimir "Hola",
+imprimimos el valor de `i`:
+
+```{r}
+for (i in 1:3) {
+  print(i)
+}
+```
+
+Esto nos permite utilizar el valor de cada elemento dentro del bloque de
+código. Por ejemplo, para mostrar cada uno de los plazos de un crédito:
 
 ```{r}
 plazos = c(6, 12, 24)
@@ -74,61 +281,235 @@ for (n in plazos) {
 }
 ```
 
-También podemos recorrer las filas de un *data frame* usando sus posiciones,
-de 1 hasta el número de filas que devuelve `nrow()`:
+Este código se lee de la siguiente manera:
+
+> **Para cada** plazo `n` del vector `plazos`, imprime el mensaje "Plazo de `n`
+> meses".
+
+Como el vector tiene tres elementos, el código entre llaves se ejecuta tres
+veces, y en cada una de ellas `n` toma un valor distinto:
+
+| Repetición | Valor de `n` | Mensaje que se imprime |
+|------------|--------------|------------------------|
+| 1          | 6            | Plazo de 6 meses       |
+| 2          | 12           | Plazo de 12 meses      |
+| 3          | 24           | Plazo de 24 meses      |
+
+La función `paste()` nos permite unir textos y números en un solo mensaje.
+
+Los ciclos también nos permiten ir acumulando un resultado. Por ejemplo, para
+calcular el total de varios pagos, podemos sumarlos uno por uno:
 
 ```{r}
-for (i in 1:nrow(clientes)) {
-  print(paste(clientes$nombre[i], "tiene un ingreso de", clientes$ingreso[i]))
+pagos = c(1500, 2000, 2500)
+total = 0
+
+for (p in pagos) {
+  total = total + p
+}
+
+total
+```
+
+> **Para cada** pago `p` del vector `pagos`, súmalo al total.
+
+Antes del ciclo, el total vale 0, y en cada repetición se le suma el pago
+correspondiente:
+
+| Repetición | Valor de `p` | Total al inicio | Total al final |
+|------------|--------------|-----------------|----------------|
+| 1          | 1 500        | 0               | 1 500          |
+| 2          | 2 000        | 1 500           | 3 500          |
+| 3          | 2 500        | 3 500           | 6 000          |
+
+Este mismo resultado podríamos obtenerlo con la función `sum()`, pero el ciclo
+nos permite ver, paso a paso, cómo se construye.
+
+Por último, como cada columna de un *data frame* es un vector, también podemos
+recorrerla con un ciclo `for`. Por ejemplo, para imprimir el nombre de cada uno
+de nuestros clientes:
+
+```{r}
+for (nombre in clientes$nombre) {
+  print(nombre)
 }
 ```
+
+> **Para cada** nombre de la columna `nombre` de `clientes`, imprímelo.
 
 ### Ciclo `while`
 
 El ciclo `while` repite un bloque de código **mientras** una condición siga
-siendo verdadera. Es útil cuando no sabemos de antemano cuántas repeticiones
-serán necesarias. Por ejemplo, ¿cuántos años tarda en duplicarse un capital
-invertido al 10 % anual?
+siendo verdadera. Su estructura es la siguiente:
 
-```{r}
-capital = 1000
-anios = 0
-
-while (capital < 2000) {
-  capital = capital * 1.10
-  anios = anios + 1
+```r
+while (condición) {
+  # Código que se repite
 }
-
-anios
-capital
 ```
 
-Es importante que la condición deje de cumplirse en algún momento; de lo
-contrario, el ciclo se repetiría indefinidamente.
+> **Mientras** la condición se cumpla, ejecuta el código que se encuentra entre
+> llaves.
+
+A diferencia del ciclo `for`, que recorre una secuencia de principio a fin, el
+ciclo `while` revisa la condición antes de cada repetición y se detiene en
+cuanto deja de cumplirse. Por ello, resulta útil cuando no sabemos de antemano
+cuántas veces se repetirá el código.
+
+Por ejemplo, para imprimir los números del 1 al 3:
+
+```{r}
+contador = 1
+
+while (contador <= 3) {
+  print(contador)
+  contador = contador + 1
+}
+```
+
+> **Mientras** el contador sea menor o igual a 3, imprímelo y súmale 1.
+
+El contador comienza en 1 y aumenta en uno con cada repetición. Cuando llega a
+4, la condición deja de cumplirse y el ciclo se detiene.
+
+Este mismo ciclo nos permite resolver problemas como el siguiente: si cada mes
+ahorramos 500 pesos, ¿cuántos meses
+necesitamos para juntar 2 000 pesos?
+
+```{r}
+ahorro = 0
+meses = 0
+
+while (ahorro < 2000) {
+  ahorro = ahorro + 500
+  meses = meses + 1
+}
+
+meses
+```
+
+> **Mientras** el ahorro sea menor que 2 000, súmale 500 y cuenta un mes más.
+
+En cada repetición, el ahorro aumenta 500 pesos y el contador de meses aumenta
+en uno:
+
+| Repetición | Ahorro al inicio | Ahorro al final | Meses |
+|------------|------------------|-----------------|-------|
+| 1          | 0                | 500             | 1     |
+| 2          | 500              | 1 000           | 2     |
+| 3          | 1 000            | 1 500           | 3     |
+| 4          | 1 500            | 2 000           | 4     |
+
+Al terminar la cuarta repetición, el ahorro ya no es menor que 2 000, por lo que
+el ciclo se detiene: necesitamos 4 meses.
+
+Es importante asegurarnos de que la condición deje de cumplirse en algún
+momento. Por ejemplo, si olvidáramos escribir `ahorro = ahorro + 500`, el
+ahorro nunca cambiaría y el ciclo se repetiría de manera indefinida. Si esto
+llegara a ocurrir, podemos detenerlo con el botón **Stop** de la consola de
+RStudio o presionando la tecla `Esc`.
+
+#### Detener o saltar una repetición: `break` y `next`
+
+En ocasiones, no es necesario que un ciclo recorra todos sus elementos. Para
+controlar su funcionamiento desde adentro, R nos ofrece dos instrucciones que,
+por lo general, se utilizan dentro de un condicional:
+
+- `break`, que detiene el ciclo por completo.
+- `next`, que omite la repetición actual y continúa con la siguiente.
+
+Por ejemplo, el siguiente ciclo recorre los números del 1 al 10, pero se
+detiene en cuanto llega al 4:
+
+```{r}
+for (i in 1:10) {
+  if (i == 4) {
+    break
+  }
+  print(i)
+}
+```
+
+> **Para cada** número del 1 al 10, **si** es igual a 4, detén el ciclo; **si
+> no**, imprímelo.
+
+Aunque el ciclo estaba preparado para recorrer los números del 1 al 10, se
+detuvo al llegar al 4, por lo que solo imprimió el 1, el 2 y el 3.
+
+Por su parte, si queremos omitir uno de los elementos, por ejemplo, el plazo de
+18 meses, utilizamos `next`:
+
+```{r}
+plazos = c(6, 12, 18, 24)
+
+for (n in plazos) {
+  if (n == 18) {
+    next
+  }
+  print(paste("Plazo de", n, "meses"))
+}
+```
+
+> **Para cada** plazo, **si** es igual a 18, sáltalo y continúa con el
+> siguiente; **si no**, imprímelo.
+
+El ciclo recorrió los cuatro plazos, pero al llegar al de 18 meses pasó
+directamente al siguiente, por lo que no lo imprimió.
+
+Las estructuras de control nos permiten tomar decisiones y repetir tareas
+dentro de nuestro código. Sin embargo, cuando necesitamos realizar el mismo
+cálculo en distintas partes de nuestro trabajo, resulta más práctico guardarlo
+para utilizarlo cuantas veces queramos. Para ello, R nos permite crear
+nuestras propias funciones, que revisaremos a continuación.
 
 ## Funciones
 
 Una **función** es un bloque de código reutilizable que recibe datos de
-entrada, llamados **argumentos**, y devuelve un resultado. Se define con la
-palabra clave `function()`, y el valor que entrega se indica con `return()`.
+entrada, llamados **argumentos**, y devuelve un resultado. Hasta ahora, hemos
+utilizado varias de las funciones que incluye R, como `print()`, `class()`,
+`length()` o `ifelse()`; sin embargo, también podemos crear nuestras propias
+funciones, que es lo que revisaremos en esta sección. Para definirlas,
+utilizamos la palabra clave `function()`, y el valor que entregan se indica con
+`return()`.
 
-Como ejemplo, escribamos una función que calcule el interés simple,
-$I = C \cdot i \cdot t$, donde $C$ es el capital, $i$ la tasa anual y $t$ el
-tiempo en años:
+Su estructura es la siguiente:
+
+```r
+nombre = function(argumento1, argumento2) {
+  # Código que realiza el cálculo
+  return(resultado)
+}
+```
+
+Como ejemplo, escribamos una función que sume dos números:
 
 ```{r}
-interes_simple = function(capital, tasa, tiempo) {
-  interes = capital * tasa * tiempo
-  return(interes)
+sumar = function(a, b) {
+  resultado = a + b
+  return(resultado)
 }
 
-interes_simple(capital = 10000, tasa = 0.12, tiempo = 2)
+sumar(a = 3, b = 5)
+```
+
+> Crea una función llamada `sumar` que reciba dos números, `a` y `b`, los sume
+> y devuelva el resultado.
+
+Una vez definida, podemos utilizarla cuantas veces queramos, con los valores
+que necesitemos. Además, podemos omitir los nombres de los argumentos, siempre
+que los escribamos en el mismo orden en que se definieron:
+
+```{r}
+sumar(10, 20)
 ```
 
 ### Argumentos con valores por defecto
 
 Podemos asignar un valor por defecto a un argumento. Si al llamar a la función
-no lo especificamos, R usará ese valor:
+no lo especificamos, R usará ese valor. Por ejemplo, la siguiente función
+calcula el interés simple, $I = C \cdot i \cdot t$, donde $C$ es el capital,
+$i$ la tasa anual y $t$ el tiempo en años; si no indicamos el tiempo,
+considera un año:
 
 ```{r}
 interes_simple = function(capital, tasa, tiempo = 1) {
@@ -150,27 +531,30 @@ interés que obtendría cada cliente si invirtiera el equivalente a un mes de su
 ingreso durante un año, al 5 % de interés simple:
 
 ```{r}
-clientes$interes_inversion = interes_simple(clientes$ingreso, 0.05)
+clientes$interes = interes_simple(clientes$ingreso, 0.05)
 
 clientes
 ```
 
 ## Manipulación de datos con dplyr
 
-**dplyr** es un paquete que forma parte del conjunto **tidyverse** y facilita
-la manipulación de tablas de datos. Sus funciones principales son:
+En la lección anterior, aprendimos a consultar, filtrar y modificar un *data
+frame* utilizando corchetes y el operador `$`. Sin embargo, conforme las tablas
+crecen y las operaciones se combinan, este tipo de código se vuelve difícil de
+leer. Para facilitar esta tarea, contamos con **dplyr**, una librería que reúne
+funciones con nombres sencillos para manipular un *data frame*. Las
+principales son:
 
-| Función       | Uso                                         |
-|---------------|---------------------------------------------|
-| `filter()`    | Selecciona filas que cumplen una condición. |
-| `select()`    | Selecciona columnas.                        |
-| `mutate()`    | Crea o modifica columnas.                   |
-| `arrange()`   | Ordena las filas.                           |
-| `group_by()` y `summarise()` | Agrupan los datos y calculan resúmenes. |
+- `filter()`, que selecciona los registros que cumplen una condición.
+- `select()`, que selecciona las columnas que indiquemos.
+- `mutate()`, que crea o modifica columnas.
+- `arrange()`, que ordena los registros según una columna.
+- `group_by()` y `summarise()`, que agrupan los registros y calculan un
+  resumen de cada grupo.
 
-Si es la primera vez que usas el paquete, debes instalarlo una sola vez con
-`install.packages()`. Después basta con cargarlo con `library()` al inicio de
-cada sesión:
+Como dplyr no viene incluida en R, antes de utilizarla debemos instalarla con
+`install.packages()`. Esto se hace una sola vez en cada proyecto; después,
+basta con cargarla con `library()` cada vez que iniciemos una sesión:
 
 ```{r}
 #| eval: false
@@ -181,36 +565,62 @@ install.packages("dplyr")
 library(dplyr)
 ```
 
-### El operador pipe `|>`
-
-El operador **pipe** `|>` toma el resultado de la izquierda y lo entrega como
-primer argumento de la función de la derecha. Así podemos encadenar varias
-operaciones en el orden en que las leemos, en lugar de anidar funciones unas
-dentro de otras. En muchos materiales encontrarás también el operador `%>%`,
-que cumple la misma función.
-
 ### `filter()`
 
-Selecciona las filas que cumplen una condición:
+Selecciona los registros que cumplen una condición. Por ejemplo, en la lección
+anterior consultamos a los clientes mayores de 27 años con corchetes,
+`clientes[clientes$edad > 27, ]`; con dplyr, escribimos:
+
+```{r}
+filter(clientes, edad > 27)
+```
+
+El primer argumento es el *data frame* y el segundo, la condición. Observa que
+escribimos directamente el nombre de la columna, sin necesidad de anteponer
+`clientes$`. También podemos combinar varias condiciones con los operadores
+lógicos `&` y `|` que revisamos al inicio de esta lección:
+
+```{r}
+filter(clientes, edad > 27 & tiene_credito == TRUE)
+```
+
+### El operador *pipe* `|>`
+
+Las funciones de dplyr suelen escribirse con el operador **pipe** `|>`, que
+toma el objeto de la izquierda y lo entrega como primer argumento de la
+función de la derecha. Así, el primer ejemplo de `filter()` también puede
+escribirse como:
 
 ```{r}
 clientes |>
   filter(edad > 27)
 ```
 
+> Toma `clientes` y, después, quédate con los clientes mayores de 27 años.
+
+Su ventaja es que nos permite encadenar varias operaciones en el orden en que
+las realizamos, como veremos más adelante. En otros materiales, encontrarás
+también el operador `%>%`, que cumple la misma función. A partir de aquí,
+utilizaremos `|>` en todos los ejemplos.
+
 ### `select()`
 
-Selecciona solo las columnas indicadas:
+Selecciona únicamente las columnas que indiquemos, en el orden en que las
+escribamos:
 
 ```{r}
 clientes |>
   select(nombre, ingreso)
 ```
 
+> Toma `clientes` y, después, quédate con las columnas `nombre` e `ingreso`.
+
 ### `mutate()`
 
-Crea una columna nueva a partir de las existentes. Por ejemplo, el ingreso
-anual de cada cliente:
+Crea una nueva columna o modifica una existente. Por ejemplo, para calcular el
+ingreso anual de cada cliente, y para que el resultado se lea con mayor
+claridad, agregamos `select()` para mostrar solo las columnas que nos
+interesan:
 
 ```{r}
 clientes |>
@@ -218,37 +628,130 @@ clientes |>
   select(nombre, ingreso, ingreso_anual)
 ```
 
+> Toma `clientes`; después, crea la columna `ingreso_anual`, que es igual al
+> ingreso multiplicado por 12 y, por último, quédate con las columnas
+> `nombre`, `ingreso` e `ingreso_anual`.
+
+Es importante mencionar que las funciones de dplyr no modifican el *data
+frame* original, sino que únicamente nos muestran el resultado. Si queremos
+conservarlo, debemos asignarlo a un objeto; por ejemplo,
+`clientes = clientes |> mutate(ingreso_anual = ingreso * 12)`.
+
 ### `arrange()`
 
-Ordena las filas según una columna; con `desc()` el orden es descendente:
+Ordena los registros de menor a mayor según una columna. Para ordenarlos de
+mayor a menor, utilizamos la función `desc()`:
 
 ```{r}
 clientes |>
   arrange(desc(ingreso))
 ```
 
+> Toma `clientes` y, después, ordénalos de mayor a menor ingreso.
+
+### Encadenar varias operaciones
+
+La ventaja del operador `|>` se aprecia cuando combinamos varias funciones. Por
+ejemplo, para consultar el nombre y el ingreso de los clientes que tienen un
+crédito, ordenados de mayor a menor ingreso:
+
+```{r}
+clientes |>
+  filter(tiene_credito == TRUE) |>
+  select(nombre, ingreso) |>
+  arrange(desc(ingreso))
+```
+
+> Toma `clientes`; después, quédate con los que tienen un crédito; después,
+> conserva solo su nombre y su ingreso y, por último, ordénalos de mayor a
+> menor ingreso.
+
 ### `group_by()` y `summarise()`
 
-Agrupan las filas según una variable y calculan un resumen para cada grupo:
+La función `summarise()` calcula uno o varios resúmenes de los registros de un
+*data frame*. Dentro de ella, podemos utilizar funciones como:
+
+- `mean()`, que calcula el promedio.
+- `sum()`, que calcula la suma.
+- `min()` y `max()`, que obtienen el valor mínimo y el máximo.
+- `n()`, que cuenta el número de registros.
+
+Por ejemplo, para calcular el ingreso promedio de nuestros clientes:
+
+```{r}
+clientes |>
+  summarise(ingreso_promedio = mean(ingreso))
+```
+
+> Toma `clientes` y, después, calcula el promedio de su ingreso.
+
+El resultado es una tabla con una sola fila, que contiene el promedio del
+ingreso de los cuatro clientes. Este mismo valor podríamos obtenerlo
+directamente con `mean(clientes$ingreso)`; sin embargo, `summarise()` nos
+entrega el resultado en forma de tabla, por lo que podemos encadenarla con
+otras funciones de dplyr, calcular varios resúmenes a la vez y, como veremos
+más adelante, obtenerlos por separado para cada grupo.
+
+Si necesitamos más de un resumen, los separamos con comas:
+
+```{r}
+clientes |>
+  summarise(
+    minimo = min(ingreso),
+    maximo = max(ingreso)
+  )
+```
+
+> Toma `clientes` y, después, obtén el ingreso mínimo y el máximo.
+
+Por su parte, la función `group_by()` agrupa los registros según los valores
+de una columna. Por sí sola, no modifica la tabla; únicamente le indica a R qué
+registros pertenecen a cada grupo, para que la función que utilicemos después
+se aplique por separado a cada uno. Por ello, casi siempre se utiliza junto con
+`summarise()`. Por ejemplo, para calcular el ingreso promedio de los clientes
+que tienen un crédito y el de los que no lo tienen:
 
 ```{r}
 clientes |>
   group_by(tiene_credito) |>
-  summarise(
-    clientes = n(),
-    ingreso_promedio = mean(ingreso)
-  )
+  summarise(ingreso_promedio = mean(ingreso))
 ```
+
+> Toma `clientes`; después, agrúpalos según si tienen un crédito y, por
+> último, calcula el ingreso promedio de cada grupo.
+
+Ahora, el resultado tiene una fila por cada grupo: la de los clientes sin
+crédito (`FALSE`) y la de los clientes con crédito (`TRUE`).
+
+Observa también que el resultado aparece como un *tibble*, que es la forma en
+la que dplyr presenta algunas tablas. Su primera línea nos indica el número de
+filas y de columnas, mientras que, debajo del nombre de cada columna, se
+muestra su tipo; por ejemplo, `<lgl>` para los valores lógicos y `<dbl>` para
+los numéricos. En la práctica, un *tibble* se utiliza igual que un *data
+frame*.
 
 ## Resumen
 
-- Los condicionales `if`, `else` e `ifelse()` permiten tomar decisiones según
-  una condición.
-- Los ciclos `for` y `while` repiten tareas sin necesidad de reescribir código.
-- Las funciones encapsulan cálculos que usaremos muchas veces, como el interés
-  simple.
-- dplyr ofrece funciones claras para filtrar, seleccionar, transformar, ordenar
-  y resumir datos, y el operador `|>` permite encadenarlas.
+En esta lección aprendimos a escribir instrucciones más complejas en R.
+Revisamos las estructuras de control, que nos permiten decidir qué
+instrucciones se ejecutan y cuántas veces se repiten, así como la forma de
+crear nuestras propias funciones y de manipular un *data frame* con la librería
+dplyr.
+
+- **Condicionales.** `if` ejecuta un bloque de código solo cuando se cumple
+  una condición, mientras que `else` y `else if` indican qué hacer en los demás
+  casos. Para evaluar una condición sobre cada elemento de un vector o de una
+  columna, utilizamos `ifelse()`.
+- **Ciclos.** `for` repite un bloque de código una vez por cada elemento de una
+  secuencia, mientras que `while` lo repite mientras una condición siga siendo
+  verdadera. Con `break` detenemos el ciclo y con `next` omitimos una
+  repetición.
+- **Funciones.** Se definen con `function()`, reciben argumentos, que pueden
+  tener valores por defecto, y entregan un resultado con `return()`.
+- **dplyr.** Sus funciones `filter()`, `select()`, `mutate()`, `arrange()`,
+  `group_by()` y `summarise()` nos permiten filtrar, seleccionar, transformar,
+  ordenar y resumir un *data frame*, mientras que el operador `|>` nos permite
+  encadenarlas.
 
 En la siguiente lección comenzaremos con las matemáticas financieras: las
 tasas de interés y cómo convertirlas entre sí.
