@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 150" font-family="'Source Sans 3', 'Source Sans Pro', Helvetica, Arial, sans-serif" fill="#343a40">
+  <rect width="580" height="150" fill="#ffffff"/>
+  <!-- Línea de tiempo -->
+  <line x1="80" y1="75" x2="500" y2="75" stroke="#343a40" stroke-width="4"/>
+  <line x1="80" y1="55" x2="80" y2="95" stroke="#343a40" stroke-width="4"/>
+  <line x1="500" y1="55" x2="500" y2="95" stroke="#343a40" stroke-width="4"/>
+  <!-- Arriba: capital, intereses y monto -->
+  <text x="80" y="40" font-size="22" font-weight="600" text-anchor="middle">C = 3 000</text>
+  <text x="290" y="40" font-size="22" font-weight="600" text-anchor="middle">I = 600</text>
+  <text x="500" y="40" font-size="22" font-weight="600" text-anchor="middle">M = 3 600</text>
+  <!-- Abajo: periodos y tasa -->
+  <text x="80" y="122" font-size="22" font-weight="600" text-anchor="middle">0</text>
+  <text x="290" y="122" font-size="22" font-weight="600" text-anchor="middle">i = 20 %</text>
+  <text x="500" y="122" font-size="22" font-weight="600" text-anchor="middle">1</text>
+</svg>
