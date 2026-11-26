@@ -410,11 +410,25 @@ el crecimiento se alcanza en el día `r ceiling(t_dias)`.
 
 ## Resumen
 
-- La tasa efectiva anual se capitaliza una sola vez al año; una tasa nominal
-  $i^{(m)}$ se capitaliza $m$ veces al año y su efectiva equivalente es mayor.
-- La tasa de interés $i$, la tasa de descuento $d$ y la fuerza de interés
-  $\delta$ son formas equivalentes de medir el costo del dinero.
-- Para comparar tasas con distinta capitalización, primero hay que
-  convertirlas a una misma base, por ejemplo, a tasas efectivas anuales.
-- La función `rate.conv()` de FinancialMath realiza estas conversiones y
-  devuelve una matriz cuyos valores se consultan por nombre.
+En esta lección revisamos qué es una tasa de interés y las distintas formas en
+las que puede expresarse, así como la manera de convertirlas y compararlas con
+ayuda de la librería FinancialMath.
+
+- **Tasas efectivas y nominales.** Una tasa efectiva se capitaliza una sola vez
+  por periodo, mientras que una tasa nominal $i^{(m)}$ se capitaliza $m$ veces
+  al año, por lo que su tasa efectiva anual equivalente es mayor.
+- **Conversión de tasas.** La función `rate.conv()` convierte una tasa en sus
+  equivalentes; basta con indicarle la tasa (`rate`), cuántas veces al año se
+  capitaliza (`conv`) y la frecuencia de la tasa nominal que queremos obtener
+  (`nom`). Además, su resultado incluye la tasa de descuento (`d`) y la fuerza
+  de interés (`delta`) equivalentes.
+- **Comparación de tasas.** Para saber qué opción nos conviene, primero
+  convertimos todas las tasas a una misma base, por lo general, a tasas
+  efectivas anuales, como lo hicimos en el caso de Adriana.
+- **Tiempo de una inversión.** A partir de la fórmula del interés compuesto,
+  $M = C\,(1 + i)^t$, podemos calcular el tiempo que tarda un capital en
+  alcanzar cierto crecimiento: $t = \ln(M / C) \,/\, \ln(1 + i)$.
+
+En la siguiente lección utilizaremos estas tasas para trasladar cantidades de
+dinero a lo largo del tiempo y analizar flujos de efectivo con la función
+`cf.analysis()`.
